@@ -1,0 +1,39 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1 class="Heading">Menu</h1>
+
+<div class="container mt-4 my-5">
+  <h4 class="text-center mb-4">Weekly Meal Schedule</h4>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Day</th>
+        <th scope="col">Breakfast<br>(7:00am-8:00am)</th>
+        <th scope="col">Lunch<br>(12:00pm-1:00pm)</th>
+        <th scope="col">Dinner<br>(7:00pm-8:00pm)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if menu%}
+      {% for menu in menu %}
+      <tr>
+        <th scope="row">{{menu.day}}</th>
+        <td> {{menu.breakfast_description}}<br>
+          <img src="{{menu.breakfast_image.url}}" alt="" class="img-fluid">
+        </td>
+        <td> 
+          {{menu.lunch_description}}
+          <img src="{{menu.lunch_image.url}}" alt="" class="img-fluid">
+        </td>
+        <td> {{menu.dinner_description}}
+          <img src="{{menu.dinner_image.url}}" alt="" class="img-fluid">
+        </td>
+      </tr>
+      {%endfor%}
+      {%endif%}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

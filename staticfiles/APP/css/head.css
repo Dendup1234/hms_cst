@@ -1,0 +1,74 @@
+.banner{
+    width: 100%;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    animation: animateBackground 20s linear infinite;
+    background: linear-gradient(to right,  #87CEEB, #1E90FF,#0e4e82);
+    position:fixed;
+    top:0;
+    right:0;
+    left:0;
+    z-index: 2;
+}
+.Contain{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.left-section{
+    flex:1fr;
+    max-width: 150px;
+    padding-top: 20px;
+
+}
+.icon_phone{
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 24px;
+    height: 24px;
+
+}
+.icon_mail{
+    height: 24px;
+    width: 24px;
+    margin-left: 10px;
+    margin-top: 20px;
+}
+.middle-section{
+    flex:1fr;
+    max-width: 150px;
+}
+.logo{
+    height: 45px;
+    width: 45px;
+    margin-top: 5px;
+    margin-left: 50px;
+}
+.title{
+    font-family: 'Times New Roman', Times, serif;
+    color: white;
+    text-align: center;
+}
+.right-section{
+    flex:1fr;
+    max-width: 150px;
+    margin-right: 20px;
+}
+.line{
+    margin-top:-10px;
+    color: white;
+}
+.hamburger{
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: end;
+}
+.navbar-nav .nav-link {
+    color: white;
+    transition: color 0.3s;
+}
+.navbar-nav .nav-link:hover{
+    color:rgb(206, 198, 198);
+}

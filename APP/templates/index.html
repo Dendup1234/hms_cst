@@ -1,0 +1,66 @@
+{% extends "main.html" %}
+
+{% block title %}index.html{% endblock %}
+
+{% block content %}
+<div class="background">
+    <h1 class="background_text">
+        Welcome To CST Hostel Website
+    </h1>
+    <p class="sub_background_text">Your Choice Matters</p>
+</div>
+<div class="background_hostel">
+    <br>
+    <br>
+    <br>
+    <br>
+    <!--Hostels-->
+    {% if hostel%}
+    {% for host in hostel %}
+    <div class="row ">
+        <div class="col-md-6 ml-2">
+            <img src="{{host.image.url}}" alt="" class="img-fluid" style="
+                margin-left:20px;
+                ">
+        </div>
+
+        <div class="col-md-6">
+
+            <h1 class="Sub_heading">{{host.name}}</h1>
+            <p class="sub_text">
+                {{host.description}}
+            </p>
+            <p class="Sub_heading">Features</p>
+            <p class="sub_text">
+                <ul>
+                    {% for feature in host.feature.all %}
+                    <li>{{feature.feature}}</li>
+                    {% empty %}
+                    <li>No Features</li>
+                    {% endfor %}
+                </ul>
+
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="icons/Fillstar.png" alt="" class="star">
+            <img src="icons/Fillstar.png" alt="" class="star">
+            <img src="icons/Fillstar.png" alt="" class="star">
+            <img src="icons/emptystar.png" alt="" class="star">
+            <img src="icons/emptystar.png" alt="" class="star">
+            <p class="Reviews_no">457 Reviews</p>
+
+
+        </div>
+        <div class="col-md-6">
+            <a href="Book.html"> <button class="Button_hostel">Book Now</button></a>
+            <a href="Review.html"> <button class="Button_hostel">Reviews</button></a>
+
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% endblock %}
