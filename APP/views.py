@@ -22,3 +22,4 @@ def reviews(request):
 
 def aboutus(request):
     return render(request,'about_us.html')
+
