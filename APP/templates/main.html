@@ -39,7 +39,15 @@
 
             </div>
             <div class="right-section mt-4 ">
-                <a href="Book.html"> <button type="button" class="btn btn-outline-light rounded">Book now</button></a>
+                <div class="d-flex gap-2">
+                    <a href="Book.html">
+                        <button type="button" class="btn btn-outline-light rounded ">Book</button>
+                    </a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-light rounded ">Logout</button>
+                      </form>
+                </div>
             </div>
         </div>
         <hr class="line">
