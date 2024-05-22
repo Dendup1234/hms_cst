@@ -1,0 +1,164 @@
+{% extends "admin_view/base.html"%}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!--Total User-->
+        <div class="col-md-3">
+            <div class="card card-custom bg-blue">
+                <div class="card-body text-center">
+                    Total User
+                </div>
+                <div class="card-title text-center">
+                    <h1>{{user_count}}</h1>
+                </div>
+            </div>
+        </div>
+        <!-- Total Hostel Card -->
+        <div class="col-md-3">
+            <div class="card card-custom bg-blue">
+                <div class="card-body text-center">
+                    Total Hostels
+                </div>
+                <div class="card-title text-center">
+                    <h1>{{hostel_count}}</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Rooms Card -->
+        <div class="col-md-3">
+            <div class="card card-custom bg-lightblue">
+                <div class="card-body text-center">
+                    Total Rooms
+                </div>
+                <div class="card-title text-center">
+                    <h1>{{room_count}}</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Booking Card -->
+        <div class="col-md-3">
+            <div class="card card-custom bg-teal">
+                <div class="card-body text-center">
+                    Total Bookings
+                </div>
+                <div class="card-title text-center">
+                    <h1>{{booking_count}}</h1>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Students Card -->
+            <div class="col-md-6">
+                <div class="card bg-light mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title">Students Info</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Reg_No</th>
+                                    <th>Gender</th>
+                                    <th>Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample Data -->
+                                {% for user in user %}
+                                <tr>
+                                    <td>{{user.name}}</td>
+                                    <td>{{user.reg_number}}</td>
+                                    <td>{{user.gender}}</td>
+                                    <td><a href="{% url 'student' user.reg_number %}" class="btn btn-primary btn-sm">More</a></td>
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last 5 Orders Card -->
+            <div class="col-md-6">
+                <div class="card bg-light mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title">Room Under Maintainece</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Hostel</th>
+                                    <th>Gender</th>
+                                    <th>Floor</th>
+                                    <th>Room Number</th>
+                                    <th>Update</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample Data -->
+                                {% for M in maintain %}
+                                <tr>
+                                    <td>{{M.floor.hostel.name}}</td>
+                                    <td>{{M.floor.hostel.gender}}</td>
+                                    <td>{{M.floor.number}}</td>
+                                    <td>{{M.room}}</td>
+                                    <td><button type="button" class="btn btn-success btn-sm">Done</button></td>
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card bg-light mb-3">
+                        <div class="card-header">
+                            <h5 class="card-title">Room With No Vacant Space</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Hostel</th>
+                                        <th>Gender</th>
+                                        <th>Floor</th>
+                                        <th>Room Number</th>
+                                        <th>Update</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Sample Data -->
+                                    {% for F in full %}
+                                    <tr>
+                                        <td>{{F.floor.hostel.name}}</td>
+                                        <td>{{F.floor.hostel.gender}}</td>
+                                        <td>{{F.floor.number}}</td>
+                                        <td>{{F.room}}</td>
+                                        <td><button type="button" class="btn btn-success btn-sm">Done</button></td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+    {%endblock%}

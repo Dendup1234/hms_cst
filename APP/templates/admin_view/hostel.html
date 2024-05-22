@@ -1,0 +1,62 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block content%}
+<h4 class="text-center">Hostels View at Web Page</h4>
+<div class="container-md d-flex justify-content-center">
+</div>
+<br>
+<br>
+<div class="container-md ">
+    <div class="row justify-content-center">
+        {%for hostel in hostel %}
+        <div class="col-md-5 d-flex justify-content-center">
+            <div class="card" style="width: 35rem;">
+                <img class="card-img-top" src="{{hostel.image.url}}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{hostel.name}}</h5>
+                    <p class="card-text">{{hostel.description}}</p>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+</div>
+<br>
+<br>
+<div class="container mt-5">
+    <div class="d-flex justify-content-center mb-3">
+        <div class="row">
+            <div class="col-md-7">
+                <h4 class="text-center">Hostels</h4>
+            </div>
+            <div class="col-md-7 d-flex justify-content-center"><a href="{% url 'hostel_create' %}"><button
+                        class="btn btn-primary btn-lg " type="submit">Create</button></a></div>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Hostel</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Floor Count</th>
+                <th scope="col">Room Count</th>
+                <th scope="col">Update</th>
+                <th scope="col">Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for hostel in hostel %}
+            <tr>
+                <td>{{hostel.name}}</td>
+                <td>{{hostel.gender}}</td>
+                <td>{{hostel.floor_count}}</td>
+                <td>{{ hostel.room_count}}</td>
+                <td><a href="{%url 'hostel_update' hostel.id%}"><button class="btn btn-primary btn-sm">Update</button></a></td>
+                <td><a href="{%url 'hostel_delete' hostel.id%}"><button class="btn btn-danger btn-sm">Delete</button></a></td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+
+{%endblock%}

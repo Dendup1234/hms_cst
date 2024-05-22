@@ -27,19 +27,8 @@
         <div class="col-md-6">
 
             <h1 class="Sub_heading">{{host.name}}</h1>
-            <p class="sub_text">
+            <p class="sub_text text-center">
                 {{host.description}}
-            </p>
-            <p class="Sub_heading">Features</p>
-            <p class="sub_text">
-                <ul>
-                    {% for feature in host.feature.all %}
-                    <li>{{feature.feature}}</li>
-                    {% empty %}
-                    <li>No Features</li>
-                    {% endfor %}
-                </ul>
-
             </p>
         </div>
     </div>

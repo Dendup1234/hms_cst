@@ -1,0 +1,87 @@
+{% extends 'admin_view/base.html' %}
+
+{% block content%}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Customer Card -->
+        <div class="col-md-12">
+            <div class="card card-custom bg-light">
+                <div class="card-header text-center">
+                    Student Profile
+                </div>
+                <div class="card-body ">
+                    <p>Name: {{user.name}}</p>
+                    <p>Registration Number: {{user.reg_number}}</p>
+                    <p>Gender: {{user.gender}}</p>
+                    <p>Email: {{user.Email_address}}</p>
+                    <p>Phone: {{user.contact_no}} </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information Card -->
+
+        <!-- Total Orders Card -->
+    </div>
+    <div class="row my-5">
+        <div class="col-md-6">
+            <div class="card card-custom bg-light">
+                <div class="card-header">
+                    Father Information
+                </div>
+                <div class="card-body">
+                    
+                    <p>Name: {{user.Father_name}}</p>
+                    <p>Email: {{user.Father_email_address}} </p>
+                    <p>Phone: {{user.Father_contact_no}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-custom bg-light">
+                <div class="card-header">
+                    Mother Information
+                </div>
+                <div class="card-body">
+                    <p>Name: {{user.Mother_name}}</p>
+                    <p>Email: {{user.Mother_email_address}} </p>
+                    <p>Phone: {{user.contact_no}}</p>
+                </div>
+            </div>
+        </div>
+        
+        
+
+    </div>
+
+    <div class="row mt-3">
+        <h4 class="text-center">Booking Schedule</h4>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Hostel</th>
+                        <th>Floor</th>
+                        <th>Room</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample Data -->
+                    {%for booking in booking %}
+                    <tr>
+                        <td>{{booking.room.floor.hostel.name}}</td>
+                        <td>{{booking.room.floor.number}}</td>
+                        <td>{{booking.room.room}}</td>
+                        <td><button type="button" class="btn btn-warning btn-sm">Update</button></td>
+                        <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>   
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
