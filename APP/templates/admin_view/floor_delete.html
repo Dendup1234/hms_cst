@@ -6,7 +6,7 @@
 <form action="{%url 'floor_delete' floor.number %}" method="POST">
     {%csrf_token%}
 
-    <a href="{%url 'hostel'%}">cancel</a>
+    <a href="{%url 'hostel_detail' floor.hostel.id%}">cancel</a>
 
     <input type="submit" name="confirm">
 

@@ -16,8 +16,8 @@
                             <tr>
                                 <th>User</th>
                                 <th>Room</th>
+                                <th>Floor Number</th>
                                 <th>Check-in Date</th>
-                                <th>Check-out Date</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -27,8 +27,8 @@
                             <tr>
                                 <td>{{booking.user.name}}</td>
                                 <td>{{booking.room.room}}</td>
+                                <td>{{booking.room.floor.number}}</td>
                                 <td>{{booking.check_in}}</td>
-                                <td>{{booking.check_out}}</td>
                                 <td><a href="{%url 'delete_booking' booking.id%}"><button class="btn btn-danger">Cancel</button></a></td>
                             </tr>
                             {%endfor%}

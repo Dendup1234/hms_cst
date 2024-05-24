@@ -95,7 +95,7 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.user} has booked {self.room}"
-    
+    # logic when the room is full when reached the maximum capacity
     def save(self, *args, **kwargs):
         if self.room.status != 'Full':
             self.room.current_bookings += 1
@@ -103,6 +103,16 @@ class Booking(models.Model):
             super().save(*args, **kwargs)
         else:
             raise ValueError("Room is full")
+    # for the delete concept
+    def delete(self, *args, **kwargs):
+        room = self.room
+        super().delete(*args, **kwargs)
+        if room.booking_set.count() == 0:
+            room.current_bookings = 0
+        else:
+            room.current_bookings = room.booking_set.count()
+        room.update_status()
+        room.save()
 
 
     

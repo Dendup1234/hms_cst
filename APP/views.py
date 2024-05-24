@@ -124,11 +124,11 @@ def hostel_admin_view(request):
 #
 def hostel_detail(request,pk):
     hostel = get_object_or_404(Hostel, id=pk)
-    floors = hostel.floors.prefetch_related('rooms')
+    floor = hostel.floors.prefetch_related('rooms')
 
     context ={
         'hostel': hostel,
-        'floor': floors,
+        'floor': floor,
     }
     return render(request,'admin_view/hostel_detail.html',context)
 #
@@ -221,20 +221,23 @@ def menu_delete(request,pk):
 
 
 #
-def create_room(request):
-    form = RoomForm
+def create_room(request, pk):
+    floor = get_object_or_404(Floor, id=pk)
     if request.method == 'POST':
         form = RoomForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('hostel')  # Ensure this is the correct URL pattern name
+            room = form.save(commit=False)
+            room.floor = floor
+            room.save()
+            return redirect('hostel_detail', pk=floor.hostel.id)  # Ensure this is the correct URL pattern name
     else:
         form = RoomForm()
     
-    context={
+    context = {
         'form': form,
+        'floor': floor,
     }
-    return render(request,'admin_view/room_form.html',context)
+    return render(request, 'admin_view/room_form.html', context)
 #
 def update_room(request,pk):
     room = get_object_or_404(Room, id=pk)
@@ -261,18 +264,21 @@ def delete_room(request,pk):
     }
     return render(request,'admin_view/room_delete.html',context)
 #
-def create_floor(request):
-    form = FloorForm
+def create_floor(request,pk):
+    hostel = get_object_or_404(Hostel,id = pk)
     if request.method == 'POST':
         form = FloorForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('hostel')  # Ensure this is the correct URL pattern name
+            floor = form.save(commit=False)
+            floor.hostel = hostel
+            floor.save()
+            return redirect('hostel_detail', pk = hostel.id)  # Ensure this is the correct URL pattern name
     else:
         form = FloorForm()
     
     context={
         'form': form,
+        'hostel': hostel,
     }
     return render(request,'admin_view/floor_form.html',context)
 #
@@ -288,6 +294,7 @@ def update_floor(request,pk):
         form = FloorForm(instance=floor)
     
     context = {
+        'floor': floor,
         'form': form,
     }
     return render(request, 'admin_view/floor_form.html', context)

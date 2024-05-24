@@ -5,7 +5,7 @@
     {% csrf_token%}
     {{form}}
     <input type="Submit">
-    <a href="{% url 'hostel'%}">Cancel</a>
+    <a href="{% url 'hostel_detail' hostel.id%}">Cancel</a>
 </form>
 
 {%endblock%}

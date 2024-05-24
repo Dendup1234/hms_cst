@@ -8,17 +8,22 @@
                 <div class="card-header">
                     <h4 class="card-title text-center">{{hostel.name}}</h4>
                     <div class="d-flex justify-content-center">
-                        <a href="{%url 'create_room' %}"><button class="btn btn-primary me-3">Create Room</button></a>
-                        <a href="{%url 'create_floor' %}"><button class="btn btn-primary">Create Floor</button></a>
+                    
+                        <a href="{%url 'create_floor' hostel.id %}"><button class="btn btn-primary">Create Floor</button></a>
                     </div>
                 </div>
 
                 <div class="card-body">
                     {% for floor in floor %}
                     <h5 class="text-center">Floor Number: {{floor.number}}</h5>
-                    <div class="d-flex justify-content-center">
-                        <a href="{%url 'floor_update' floor.number %}"><button class="btn btn-primary btn-sm me-3">Update Floor</button></a>
-                        <a href="{%url 'floor_delete' floor.number %}"><button class="btn btn-danger btn-sm">Delete Floor</button></a>
+                    <div class="d-flex  justify-content-center">
+
+                        <a href="{%url 'create_room' floor.id %}"><button class="btn btn-primary me-3">Create Room</button></a>
+
+                    </div>
+                    <div class="d-flex justify-content-center my-3">
+                        <a href="{%url 'floor_update' floor.id %}"><button class="btn btn-primary btn-sm me-3">Update Floor</button></a>
+                        <a href="{%url 'floor_delete' floor.id %}"><button class="btn btn-danger btn-sm">Delete Floor</button></a>
                     </div>
 
                     <table class="table">

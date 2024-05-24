@@ -5,7 +5,7 @@
 <form action="{%url 'delete_booking' booking.id %}" method="POST">
     {%csrf_token%}
 
-    <a href="{%url 'booking_admin'%}">Cancel</a>
+    <a href="{%url 'booking_detail' booking.room.floor.hostel.id %}">Cancel</a>
 
     <input type="submit" name="confirm">
 

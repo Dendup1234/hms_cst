@@ -21,11 +21,11 @@ class MenuForm(ModelForm):
 class RoomForm(ModelForm):
     class Meta:
         model = Room
-        fields= '__all__'
+        fields= ['id','room', 'status', 'max_capacity']
 
 class FloorForm(ModelForm):
     class Meta:
         model = Floor
-        fields= '__all__'
+        fields = ['number']
 
 
