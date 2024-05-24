@@ -1,0 +1,11 @@
+{%extends 'admin_view/base.html'%}
+
+{%block content%}
+<form action="" method="POST">
+    {% csrf_token%}
+    {{form}}
+    <input type="Submit">
+    <a href="{% url 'hostel'%}">Cancel</a>
+</form>
+
+{%endblock%}

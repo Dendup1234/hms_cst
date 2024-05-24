@@ -1,10 +1,10 @@
 {% extends "admin_view/base.html"%}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
+<div class="container  mt-5">
+    <div class="row d-flex justify-content-center">
         <!--Total User-->
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card card-custom bg-blue">
                 <div class="card-body text-center">
                     Total User
@@ -15,7 +15,7 @@
             </div>
         </div>
         <!-- Total Hostel Card -->
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card card-custom bg-blue">
                 <div class="card-body text-center">
                     Total Hostels
@@ -25,9 +25,20 @@
                 </div>
             </div>
         </div>
+        <!-- Total Floors Card -->
+        <div class="col-md-2">
+            <div class="card card-custom bg-blue">
+                <div class="card-body text-center">
+                    Total Floors
+                </div>
+                <div class="card-title text-center">
+                    <h1>{{floor_count}}</h1>
+                </div>
+            </div>
+        </div>
 
         <!-- Total Rooms Card -->
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card card-custom bg-lightblue">
                 <div class="card-body text-center">
                     Total Rooms
@@ -39,7 +50,7 @@
         </div>
 
         <!-- Total Booking Card -->
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card card-custom bg-teal">
                 <div class="card-body text-center">
                     Total Bookings

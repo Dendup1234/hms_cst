@@ -53,7 +53,7 @@ class Menu(models.Model):  # Class names should be capitalized
 # Floor of the hostel
 class Floor(models.Model):
     hostel = models.ForeignKey(Hostel,related_name='floors',null=True,on_delete=models.SET_NULL)
-    number = models.IntegerField(default=0)
+    number = models.IntegerField(default=0,null=True)
 
     def __str__(self):
         return f"{self.hostel.name} Floor - {self.number}"

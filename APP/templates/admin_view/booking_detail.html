@@ -1,0 +1,42 @@
+{%extends 'admin_view/base.html'%}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Students Card -->
+        <div class="col-md-6">
+            <div class="card bg-light mb-3">
+                <div class="card-header">
+                    <h5 class="card-title">{{hostel.name}}-Booking Schedules</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+
+                            <tr>
+                                <th>User</th>
+                                <th>Room</th>
+                                <th>Check-in Date</th>
+                                <th>Check-out Date</th>
+                                <th>Cancel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample Data -->
+                            {%for booking in booking%}
+                            <tr>
+                                <td>{{booking.user.name}}</td>
+                                <td>{{booking.room.room}}</td>
+                                <td>{{booking.check_in}}</td>
+                                <td>{{booking.check_out}}</td>
+                                <td><a href="{%url 'delete_booking' booking.id%}"><button class="btn btn-danger">Cancel</button></a></td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        {% endblock%}

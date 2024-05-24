@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .models import *
 # Create your views here.
-from .forms import HostelForm,MenuForm
+from .forms import HostelForm,MenuForm,RoomForm,FloorForm
 from django.db.models import Count
 @login_required(login_url='login')
 def hostel(request):
@@ -83,6 +83,7 @@ def dashboard(request):
     total_hostel = Hostel.objects.count()
     total_room  = Room.objects.count()
     total_booking = Booking.objects.count()
+    total_floor = Floor.objects.count()
     room_M = room.filter(status='Maintainece')
     room_F = room.filter(status='Full')
     context ={
@@ -91,6 +92,7 @@ def dashboard(request):
         'hostel_count': total_hostel,
         'room_count': total_room,
         'booking_count': total_booking,
+        'floor_count': total_floor,
         'maintain': room_M,
         'full': room_F,
         'user': user,
@@ -112,14 +114,23 @@ def student_profile(request,pk_test):
 #
 def hostel_admin_view(request):
     hostels = Hostel.objects.all().annotate(
-        floor_count=Count('floors', distinct=True),
-        room_count=Count('floors__rooms', distinct=True)
+    floor_count=Count('floors', distinct=True),
+    room_count=Count('floors__rooms', distinct=True)
     )
     context ={
         'hostel': hostels
     }
     return render(request,'admin_view/hostel.html',context)
+#
+def hostel_detail(request,pk):
+    hostel = get_object_or_404(Hostel, id=pk)
+    floors = hostel.floors.prefetch_related('rooms')
 
+    context ={
+        'hostel': hostel,
+        'floor': floors,
+    }
+    return render(request,'admin_view/hostel_detail.html',context)
 #
 def create_hostel(request):
     if request.method == 'POST':
@@ -196,6 +207,136 @@ def menu_update(request,pk):
         'form': form,
     }
     return render(request, 'admin_view/menu_form.html', context)
+
+def menu_delete(request,pk):
+    menu = get_object_or_404(Menu, id=pk)
+    if request.method == 'POST':
+        menu.delete()
+        return redirect('menu_admin')
+    context = {
+        'menu': menu
+
+    }
+    return render(request,'admin_view/menu_delete.html',context)
+
+
+#
+def create_room(request):
+    form = RoomForm
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('hostel')  # Ensure this is the correct URL pattern name
+    else:
+        form = RoomForm()
+    
+    context={
+        'form': form,
+    }
+    return render(request,'admin_view/room_form.html',context)
+#
+def update_room(request,pk):
+    room = get_object_or_404(Room, id=pk)
+    if request.method == 'POST':
+        form = RoomForm(request.POST, request.FILES, instance=room)
+        if form.is_valid():
+            form.save()
+            return redirect('hostel')  # Ensure this is the correct URL pattern name
+    else:
+        form = RoomForm(instance=room)
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'admin_view/room_form.html', context)
+#
+def delete_room(request,pk):
+    room = get_object_or_404(Room, id=pk)
+    if request.method == 'POST':
+        room.delete()
+        return redirect('hostel')
+    context = {
+        'room': room
+    }
+    return render(request,'admin_view/room_delete.html',context)
+#
+def create_floor(request):
+    form = FloorForm
+    if request.method == 'POST':
+        form = FloorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('hostel')  # Ensure this is the correct URL pattern name
+    else:
+        form = FloorForm()
+    
+    context={
+        'form': form,
+    }
+    return render(request,'admin_view/floor_form.html',context)
+#
+
+def update_floor(request,pk):
+    floor = get_object_or_404(Floor, id=pk)
+    if request.method == 'POST':
+        form = FloorForm(request.POST, request.FILES, instance=floor)
+        if form.is_valid():
+            form.save()
+            return redirect('hostel')  # Ensure this is the correct URL pattern name
+    else:
+        form = FloorForm(instance=floor)
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'admin_view/floor_form.html', context)
+#
+def delete_floor(request,pk):
+    floor = get_object_or_404(Floor, id=pk)
+    if request.method == 'POST':
+        floor.delete()
+        return redirect('hostel')
+    context = {
+        'floor': floor
+    }
+    return render(request,'admin_view/floor_delete.html',context)
+#
+def booking_admin(request):
+    hostel = Hostel.objects.all()
+    context = {
+        'hostel': hostel,
+    }
+    return render(request, 'admin_view/booking.html',context)
+
+#
+def booking_detail(request,pk):
+    hostel = get_object_or_404(Hostel, id=pk)
+    bookings = Booking.objects.filter(room__floor__hostel=hostel)
+    
+    context = {
+        'hostel': hostel,
+        'booking': bookings,
+    }
+    return render(request, 'admin_view/booking_detail.html', context)
+#
+def delete_booking(request,pk):
+    booking = get_object_or_404(Booking, id=pk)
+    if request.method == 'POST':
+        booking.delete()
+        return redirect('booking_admin')
+    context = {
+        'booking': booking
+    }
+    return render(request,'admin_view/booking_delete.html',context)
+
+
+
+
+    
+
+    
+
     
     
 

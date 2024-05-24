@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import Hostel,Menu
+from .models import Hostel,Menu,Room,Floor
 
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -17,4 +17,15 @@ class MenuForm(ModelForm):
     class Meta:
         model = Menu
         fields= '__all__'
+
+class RoomForm(ModelForm):
+    class Meta:
+        model = Room
+        fields= '__all__'
+
+class FloorForm(ModelForm):
+    class Meta:
+        model = Floor
+        fields= '__all__'
+
 

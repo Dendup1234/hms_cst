@@ -1,0 +1,15 @@
+{% extends 'admin_view/base.html'%}
+
+{% block content %}
+
+<h4>Are you sure you want to delete the floor {{floor.number}}</h4>
+<form action="{%url 'floor_delete' floor.number %}" method="POST">
+    {%csrf_token%}
+
+    <a href="{%url 'hostel'%}">cancel</a>
+
+    <input type="submit" name="confirm">
+
+</form>
+
+{% endblock%}

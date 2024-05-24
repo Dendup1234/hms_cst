@@ -16,7 +16,6 @@
                 <th scope="col">Breakfast<br>(7:00am-8:00am)</th>
                 <th scope="col">Lunch<br>(12:00pm-1:00pm)</th>
                 <th scope="col">Dinner<br>(7:00pm-8:00pm)</th>
-                <th scope="col">Update<br></th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +35,9 @@
                 </td>
                 <td >
                    <a href ="{%url 'menu_update' menu.id%}"><button type="button" class="btn btn-primary my-5">Update</button></a> 
+                </td>
+                <td>
+                    <a href ="{%url 'menu_delete' menu.id%}"><button type="button" class="btn btn-danger my-5">Delete</button></a> 
                 </td>
             </tr>
             {%endfor%}

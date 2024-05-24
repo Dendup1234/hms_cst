@@ -1,0 +1,62 @@
+{%extends 'admin_view/base.html'%}
+
+{%block content%}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card bg-light mb-3">
+                <div class="card-header">
+                    <h4 class="card-title text-center">{{hostel.name}}</h4>
+                    <div class="d-flex justify-content-center">
+                        <a href="{%url 'create_room' %}"><button class="btn btn-primary me-3">Create Room</button></a>
+                        <a href="{%url 'create_floor' %}"><button class="btn btn-primary">Create Floor</button></a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    {% for floor in floor %}
+                    <h5 class="text-center">Floor Number: {{floor.number}}</h5>
+                    <div class="d-flex justify-content-center">
+                        <a href="{%url 'floor_update' floor.number %}"><button class="btn btn-primary btn-sm me-3">Update Floor</button></a>
+                        <a href="{%url 'floor_delete' floor.number %}"><button class="btn btn-danger btn-sm">Delete Floor</button></a>
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Gender</th>
+                                <th>Room</th>
+                                <th>Status</th>
+                                <th>Max Capacity</th>
+                                <th>Current Booking</th>
+                                <th>Update</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample Data -->
+                            {% for room in floor.rooms.all %}
+                            <tr>
+                                <td>{{hostel.gender}}</td>
+                                <td>{{room.room}}</td>
+                                <td>{{room.status}}</td>
+                                <td>{{room.max_capacity}}</td>
+                                <td>{{room.current_bookings}}</td>
+                                <td><a href="{%url 'room_update' room.id %}"><button
+                                            class="btn btn-primary">Update</button></a></td>
+                                <td><a href="{%url 'room_delete' room.id %}"><button
+                                            class="btn btn-danger">Delete</button></a></td>
+                            </tr>
+                            {%endfor%}
+
+                        </tbody>
+                    </table>
+                    <br>
+                    <br>
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
