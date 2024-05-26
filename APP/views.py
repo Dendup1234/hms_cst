@@ -5,30 +5,6 @@ from .models import *
 # Create your views here.
 from .forms import HostelForm,MenuForm,RoomForm,FloorForm
 from django.db.models import Count
-@login_required(login_url='login')
-def hostel(request):
-    hostel = Hostel.objects.all()
-    context = {
-        "hostel": hostel
-    }
-    return render(request,'index.html',context)
-
-@login_required(login_url='login')
-def menu(request):
-    menu = Menu.objects.all()
-    context = {
-        "menu":menu
-    }
-    return render(request,'menu.html',context)
-
-@login_required(login_url='login')
-def reviews(request):
-    return render(request,'Review.html')
-
-@login_required(login_url='login')
-def aboutus(request):
-    return render(request,'about_us.html')
-
 # for the user login and registeration
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
@@ -37,49 +13,100 @@ from django.contrib.auth import authenticate,login,logout
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
+from .decorators import unauthenticated_user,allowed_users,admin_only
+from django.contrib.auth.models import Group 
 
-#
+# Webpage Home view
+@login_required(login_url='login')
+def hostel(request):
+    hostel = Hostel.objects.all()
+    context = {
+        "hostel": hostel
+    }
+    return render(request,'index.html',context)
+
+# Menu web page view
+@login_required(login_url='login')
+def menu(request):
+    menu = Menu.objects.all()
+    context = {
+        "menu":menu
+    }
+    return render(request,'menu.html',context)
+
+# Reviews page at the web page
+@login_required(login_url='login')
+def reviews(request):
+    return render(request,'Review.html')
+
+# About us page for the web page
+@login_required(login_url='login')
+def aboutus(request):
+    return render(request,'about_us.html')
+
+# Login view for the login procedure
+@unauthenticated_user
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-     if request.method == 'POST':
-         username = request.POST.get('username')
-         password = request.POST.get('password')
-         user = authenticate(request, username=username, password=password)
-         if user is not None:
-             auth_login(request, user)
-             return redirect('home')
-         else:
-             messages.info(request,'Username Or password is incorrect')
-            
-
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request,'Username Or password is incorrect')        
     context = {}
     return render(request, 'accounts/login.html', context)
-#
+
+# For the logout process
 def logoutUser(request):
     logout(request)
     return redirect('login')
-#
-def register(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-     form = CreateUserForm(request.POST)
-     if form.is_valid():
-         form.save()
-         user = form.cleaned_data.get('username')
-         messages.success(request,'Account was created for '+ user)
-         return redirect('login')
-     context={'form':form}
-     return render(request,'accounts/register.html',context)
 
-#
+#For the resgisteration page
+@unauthenticated_user
+def register(request): 
+    form = CreateUserForm(request.POST)
+    if form.is_valid():
+        user = form.save()
+        username = form.cleaned_data.get('username')
+        group = Group.objects.get(name='student')
+        user.groups.add(group)
+        Userprofile.objects.create(
+            user= user,
+            name=username
+        )
+        return redirect('login')
+    context={'form':form}
+    return render(request,'accounts/register.html',context)
+
+# User page
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['student'])
+def userpage(request):
+    booking = Booking.objects.select_related('room__floor__hostel').filter(user=request.user).first()
+    context ={
+        'booking': booking,
+        
+    }
+    return render(request,'admin_view/userpage.html',context)
+
+#User Setting
+def usersetting(request):
+    context = {
+    }
+    return render(request,'admin_view/user_setting.html',context)
+
+
+#Dashboard for the admin view
+@login_required(login_url='login')
+@admin_only
 def dashboard(request):
-    user = User.objects.all()
+    user = Userprofile.objects.all()
     bookings = Booking.objects.select_related('user', 'room', 'room__floor', 'room__floor__hostel')
     room = Room.objects.select_related('floor','floor__hostel')
-    total_user = User.objects.count()
+    total_user = Userprofile.objects.count()
     total_hostel = Hostel.objects.count()
     total_room  = Room.objects.count()
     total_booking = Booking.objects.count()
@@ -100,18 +127,21 @@ def dashboard(request):
     }
     return render (request,'admin_view/dashboard.html',context= context)
 
-#
+# Student profile at the admin page
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def student_profile(request,pk_test):
-    user = User.objects.get(reg_number= pk_test)
-    bookings = Booking.objects.filter(user=user).select_related('room__floor__hostel')
-
+    userprofile = get_object_or_404(Userprofile, id=pk_test)
+    bookings = Booking.objects.filter(user=userprofile.user).select_related('room__floor__hostel')
     context ={
-        'user': user,
-        'booking':bookings
+        'users': userprofile,
+        'booking':bookings,
     }
     return render(request,'admin_view/student_profile.html',context)
 
-#
+# Hostel view at admin
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def hostel_admin_view(request):
     hostels = Hostel.objects.all().annotate(
     floor_count=Count('floors', distinct=True),
@@ -122,6 +152,8 @@ def hostel_admin_view(request):
     }
     return render(request,'admin_view/hostel.html',context)
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def hostel_detail(request,pk):
     hostel = get_object_or_404(Hostel, id=pk)
     floor = hostel.floors.prefetch_related('rooms')
@@ -132,6 +164,8 @@ def hostel_detail(request,pk):
     }
     return render(request,'admin_view/hostel_detail.html',context)
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def create_hostel(request):
     if request.method == 'POST':
         form = HostelForm(request.POST, request.FILES)
@@ -146,6 +180,8 @@ def create_hostel(request):
     }
     return render(request, 'admin_view/hostel_form.html', context)
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def update_hostel(request, pk):
     hostel = get_object_or_404(Hostel, id=pk)
     if request.method == 'POST':
@@ -161,6 +197,8 @@ def update_hostel(request, pk):
     }
     return render(request, 'admin_view/hostel_form.html', context)
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def delete_hostel (request,pk):
     hostel = get_object_or_404(Hostel, id=pk)
     if request.method == 'POST':
@@ -171,7 +209,10 @@ def delete_hostel (request,pk):
 
     }
     return render(request,'admin_view/hostel_delete.html',context)
-#
+
+# Menu admin page
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def menu_admin(request):
     menu = Menu.objects.all()
     context ={
@@ -179,6 +220,8 @@ def menu_admin(request):
     }
     return render(request,'admin_view/menu.html',context)
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def menu_create(request):
     form = MenuForm
     if request.method == 'POST':
@@ -193,6 +236,8 @@ def menu_create(request):
     }
     return render(request,'admin_view/menu_form.html',context)
 # 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def menu_update(request,pk):
     menu = get_object_or_404(Menu, id=pk)
     if request.method == 'POST':
@@ -207,7 +252,9 @@ def menu_update(request,pk):
         'form': form,
     }
     return render(request, 'admin_view/menu_form.html', context)
-
+#
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def menu_delete(request,pk):
     menu = get_object_or_404(Menu, id=pk)
     if request.method == 'POST':
@@ -220,7 +267,9 @@ def menu_delete(request,pk):
     return render(request,'admin_view/menu_delete.html',context)
 
 
-#
+#For the room CRUD functions
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def create_room(request, pk):
     floor = get_object_or_404(Floor, id=pk)
     if request.method == 'POST':
@@ -239,6 +288,8 @@ def create_room(request, pk):
     }
     return render(request, 'admin_view/room_form.html', context)
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def update_room(request,pk):
     room = get_object_or_404(Room, id=pk)
     if request.method == 'POST':
@@ -254,6 +305,8 @@ def update_room(request,pk):
     }
     return render(request, 'admin_view/room_form.html', context)
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def delete_room(request,pk):
     room = get_object_or_404(Room, id=pk)
     if request.method == 'POST':
@@ -263,7 +316,12 @@ def delete_room(request,pk):
         'room': room
     }
     return render(request,'admin_view/room_delete.html',context)
+
+# For the floor CRUD functions
+
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def create_floor(request,pk):
     hostel = get_object_or_404(Hostel,id = pk)
     if request.method == 'POST':
@@ -281,8 +339,10 @@ def create_floor(request,pk):
         'hostel': hostel,
     }
     return render(request,'admin_view/floor_form.html',context)
-#
 
+#
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def update_floor(request,pk):
     floor = get_object_or_404(Floor, id=pk)
     if request.method == 'POST':
@@ -298,7 +358,10 @@ def update_floor(request,pk):
         'form': form,
     }
     return render(request, 'admin_view/floor_form.html', context)
+
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def delete_floor(request,pk):
     floor = get_object_or_404(Floor, id=pk)
     if request.method == 'POST':
@@ -308,7 +371,10 @@ def delete_floor(request,pk):
         'floor': floor
     }
     return render(request,'admin_view/floor_delete.html',context)
-#
+
+# For the booking view at the admin page
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def booking_admin(request):
     hostel = Hostel.objects.all()
     context = {
@@ -317,6 +383,8 @@ def booking_admin(request):
     return render(request, 'admin_view/booking.html',context)
 
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def booking_detail(request,pk):
     hostel = get_object_or_404(Hostel, id=pk)
     bookings = Booking.objects.filter(room__floor__hostel=hostel)
@@ -327,6 +395,8 @@ def booking_detail(request,pk):
     }
     return render(request, 'admin_view/booking_detail.html', context)
 #
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def delete_booking(request,pk):
     booking = get_object_or_404(Booking, id=pk)
     if request.method == 'POST':

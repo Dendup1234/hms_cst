@@ -19,7 +19,8 @@
   body {
     padding-top: 100px;
     /* Adjust if your navbar height is different */
-  } 
+  }
+
 </style>
 
 <body>
@@ -28,12 +29,22 @@
       <img src="{% static 'APP/image/cstlogo176.png' %}" width="50" height="50" class="d-inline-block " alt="">
       College of Science and Technology
     </a>
+    <div class="navbar-brand">Hello {{request.user}} </div>
+    <div>
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-light rounded ">Logout</button>
+      </form>
+    </div>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
+        {% if request.user.is_staff%}
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'dash' %}">Home </a>
         </li>
@@ -49,11 +60,17 @@
         <li class="nav-item">
           <a class="nav-link" href="#">Reviews</a>
         </li>
+        {%endif%}
+        <li class="nav-item">
+          <a class="nav-link" href="{%url 'home'%}">Web page</a>
+        </li>
       </ul>
     </div>
+
   </nav>
 
   <main>
+
     {% block content %}
     {% endblock %}
   </main>

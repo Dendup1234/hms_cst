@@ -1,0 +1,49 @@
+{%extends 'admin_view/base.html'%}
+
+{%block content%}
+<style>
+    .profile-pic {
+        max-width: 200px;
+        max-height: 200px;
+        margin: 0 auto;
+        border-radius: 50%;
+    }
+</style>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <a class="btn btn-warning" href="{% url 'home' %}">← Back to Profile</a>
+                    <hr>
+                    <h3 class="text-center">Account Settings</h3>
+                    <hr>
+                    <img class="profile-pic" src="{% static 'path/to/profile-pic.jpg' %}" alt="Profile Picture">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <!-- Add your form fields here -->
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username"
+                                value="{{ user.username }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Information</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{%endblock%}

@@ -30,4 +30,6 @@ urlpatterns = [
     path('booking_admin/',views.booking_admin, name='booking_admin'),
     path('booking_detail/<str:pk>',views.booking_detail, name='booking_detail'),
     path('delete_booking/<str:pk>/',views.delete_booking,name='delete_booking'),
+    path('userpage/',views.userpage,name='userpage'),
+    path('usersetting/',views.usersetting,name='usersetting')
 ]

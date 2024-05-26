@@ -1,0 +1,40 @@
+{% extends 'admin_view/base.html'%}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="card bg-light mb-3">
+        <div class="card-header">
+            <h5 class="card-title">Booking Schedule</h5>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Room</th>
+                        <th>Floor</th>
+                        <th>Hotel Name</th>
+                        <th>Check in Date</th>
+                        <th>Check out Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample Data -->
+                    {% if booking %}
+                    <tr>
+                        <td>{{ booking.room.room }}</td>
+                        <td>{{ booking.room.floor.number }}</td>
+                        <td>{{ booking.room.floor.hostel.name }}</td>
+                        <td>{{ booking.check_in }}</td>
+                        <td>{{ booking.check_out}}</td>
+
+                    </tr>
+                    {% endif %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock%}

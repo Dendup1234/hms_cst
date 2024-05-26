@@ -1,7 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # For the user
-class User(models.Model):
+class Userprofile(models.Model):
+    user = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
+    profile_pic = models.ImageField(null=True,blank=True)
     name = models.CharField(max_length=200,null=True)
     reg_number = models.IntegerField(default=0,null=True)
     Email_address = models.CharField(max_length=100, null=True)
@@ -20,11 +23,10 @@ class User(models.Model):
 
 
     def __str__ (self):
-        return self.name
+        return self.name if self.name else self.user.username if self.user else "Unnamed Profile"
     
     
 class Hostel(models.Model):
-    id = models.IntegerField(default=0,primary_key=True)
     gender = (
         ('M','Male'),
         ('F','Female'),
@@ -38,7 +40,6 @@ class Hostel(models.Model):
         return self.name
 
 class Menu(models.Model):  # Class names should be capitalized
-    id = models.IntegerField(default=0,primary_key=True)
     day = models.CharField(max_length=200)
     breakfast_description = models.CharField(max_length=200)
     breakfast_image = models.ImageField(upload_to='breakfasts/')  # Adjusted upload_to path
@@ -59,7 +60,6 @@ class Floor(models.Model):
         return f"{self.hostel.name} Floor - {self.number}"
 
 class Room (models.Model):
-    id = models.IntegerField(default=0,primary_key=True)
     Status = (
         ('Vacant','Vacant'),
         ('Full','Full'),
@@ -88,7 +88,7 @@ def get_end_of_semester():
     return datetime.date(datetime.datetime.now().year, 6, 7)
 
 class Booking(models.Model):
-    user = models.ForeignKey(User, null= True ,on_delete=models.SET_NULL)
+    user = models.OneToOneField(User, null=True, related_name='booking', on_delete=models.SET_NULL)
     room = models.ForeignKey(Room, null = True, on_delete=models.SET_NULL)
     check_in = models.DateField(default=datetime.date.today)
     check_out = models.DateField(default=get_end_of_semester)

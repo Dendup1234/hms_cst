@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Hostel,Menu,User,Room,Booking,Floor
+from .models import Hostel,Menu,Userprofile,Room,Booking,Floor
 
 class MyModelAdmin(admin.ModelAdmin):
     list_display = ('title', 'description')  # Specifies the fields to display in the list view
@@ -13,6 +13,6 @@ class MyModelAdmin(admin.ModelAdmin):
 admin.site.register(Hostel)
 admin.site.register(Menu)
 admin.site.register(Room)
-admin.site.register(User)
+admin.site.register(Userprofile)
 admin.site.register(Booking)
 admin.site.register(Floor)
