@@ -4,9 +4,8 @@ from django.contrib.auth.models import User
 # For the user
 class Userprofile(models.Model):
     user = models.OneToOneField(User,null=True,on_delete=models.CASCADE,related_name='userprofile')
-    profile_pic = models.ImageField(null=True,blank=True)
     name = models.CharField(max_length=200,null=True)
-    reg_number = models.IntegerField(default=0,null=True)
+    reg_number = models.IntegerField(default=0,null=True,unique=True)
     Email_address = models.CharField(max_length=100, null=True)
     contact_no = models.IntegerField(default=0,null=True)
     gender = (
@@ -67,9 +66,9 @@ class Room (models.Model):
     )
     floor = models.ForeignKey(Floor,related_name='rooms' ,null=True,on_delete=models.SET_NULL)
     room = models.CharField(max_length=200)
-    max_capacity = models.IntegerField(default=1)
+    max_capacity = models.IntegerField(default=3)
     current_bookings = models.IntegerField(default=0)
-    status = models.CharField(max_length=200,choices=Status)
+    status = models.CharField(max_length=200,choices=Status ,default='Vacant')
 
     def __str__ (self):
         return f"{self.room}-{self.status}"
