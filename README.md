@@ -85,5 +85,5 @@ A web-based application built with Django for managing hostel accommodations, in
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/hostel-management-system.git
-   cd hostel-management-system
+   git clone https://github.com/Dendup1234/hms_cst.git
+   cd hms_cst
