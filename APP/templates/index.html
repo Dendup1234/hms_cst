@@ -15,52 +15,71 @@
     <br>
     <br>
     <!--Hostels-->
-    {% if hostel%}
-    {% for host in hostel %}
-    <div class="row ">
-        <div class="col-md-6 ml-2">
-            <img src="{{host.image.url}}" alt="" class="img-fluid" style="
+    <h2 class="text-center my-5">Male Hostel</h2>
+    <hr>
+    {% for male_host in male_hostels %}
+    <div class="row my-5 ">
+        <div class="col-md-6">
+            <img src="{{male_host.image.url}}" alt="" class="img-fluid" style="
                 margin-left:20px;
                 ">
         </div>
 
         <div class="col-md-6">
 
-            <h1 class="Sub_heading">{{host.name}}</h1>
-            <p class="sub_text">
-                {{host.description}}
-            </p>
-            <p class="Sub_heading">Features</p>
-            <p class="sub_text">
-                <ul>
-                    {% for feature in host.feature.all %}
-                    <li>{{feature.feature}}</li>
-                    {% empty %}
-                    <li>No Features</li>
-                    {% endfor %}
-                </ul>
-
+            <h1 class="Sub_heading">{{male_host.name}}</h1>
+            <p class="sub_text text-center">
+                {{male_host.description}}
             </p>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <img src="icons/Fillstar.png" alt="" class="star">
-            <img src="icons/Fillstar.png" alt="" class="star">
-            <img src="icons/Fillstar.png" alt="" class="star">
-            <img src="icons/emptystar.png" alt="" class="star">
-            <img src="icons/emptystar.png" alt="" class="star">
-            <p class="Reviews_no">457 Reviews</p>
-
-
+        <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+            <h4>No. of Reviews: {{ male_host.review_count }}</h4>
+            <h4>Average Rating: {{ male_host.average_rating|default:"No reviews yet" }}/5</h4>
         </div>
-        <div class="col-md-6">
-            <a href="Book.html"> <button class="Button_hostel">Book Now</button></a>
-            <a href="Review.html"> <button class="Button_hostel">Reviews</button></a>
+        <div class="col-md-6 d-flex justify-content-center">
+            <a href="{%url 'selected_floor' male_host.id %}"> <button class="Button_hostel">Book Now</button></a>
+            <a href="{%url 'reviews' male_host.id %}"> <button class="Button_hostel">Reviews</button></a>
 
         </div>
     </div>
     {% endfor %}
-    {% endif %}
+    <!--Female Hostel-->
+    <h2 class="text-center my-5">Female Hostel</h2>
+    <hr>
+    {% for female_host in female_hostels %}
+    <div class="row  my-5">
+        <div class="col-md-6">
+            <img src="{{female_host.image.url}}" alt="" class="img-fluid" style="
+                margin-left:20px;
+                ">
+        </div>
 
-    {% endblock %}
+        <div class="col-md-6">
+
+            <h1 class="Sub_heading">{{female_host.name}}</h1>
+            <p class="sub_text text-center">
+                {{female_host.description}}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+            <h4>No. of Reviews: {{ female_host.review_count }}</h4>
+            <h4>Average Rating: {{ female_host.average_rating|default:"No reviews yet" }}/5</h4>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center">
+            <a href="{%url 'selected_floor' female_host.id %}"> <button class="Button_hostel">Book Now</button></a>
+            <a href="{%url 'reviews' female_host.id %}"> <button class="Button_hostel">Reviews</button></a>
+
+        </div>
+    </div>
+    {%endfor%}
+
+
+</div>
+
+
+
+{% endblock %}

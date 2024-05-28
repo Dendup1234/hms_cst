@@ -1,0 +1,22 @@
+{% extends 'admin_view/Forms/main.html' %}
+
+{% block form_title %}
+    Confirm Deletion
+{% endblock %}
+
+{% block progress_bar %}
+    <!-- Progress bar is optional and can be added here if needed -->
+{% endblock %}
+
+{% block form_content %}
+<div class="text-center">
+    <h4>Are you sure you want to delete the menu for {{ menu.day }}?</h4>
+</div>
+<form action="{% url 'menu_delete' menu.id %}" method="POST" class="mt-4">
+    {% csrf_token %}
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'menu_admin' %}" class="btn btn-secondary">Cancel</a>
+        <input type="submit" name="confirm" value="Confirm" class="btn btn-danger">
+    </div>
+</form>
+{% endblock %}

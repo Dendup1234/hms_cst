@@ -1,39 +1,45 @@
-{% extends 'main.html'%}
-{%block content%}
-<section class="about-section">
-            <div class="container">
-                <h2>About Us</h2>
-                <p>Welcome to our CST Hostel Management System. We are dedicated to providing efficient and user-friendly solutions for hostel management needs.</p>
-            </div>
-        </section>
-    
-        <!-- Team Section -->
-        <section class="team-section">
-            <div class="container">
-                <h2>Our Team</h2>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="team-member">
-                            <img src="image/WIN_20240312_12_39_42_Pro.jpg" class="img-fluid rounded-circle" alt="Team Member 1">
-                            <h4>Dendup Tshering</h4>
-                            <p>Founder & CEO</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="team-member">
-                            <img src="image/WIN_20240312_12_39_42_Pro.jpg" class="img-fluid rounded-circle" alt="Team Member 2">
-                            <h4>Dendup Tshering</h4>
-                            <p>Frontend Developer</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="team-member">
-                            <img src="image/WIN_20240312_12_39_42_Pro.jpg" class="img-fluid rounded-circle" alt="Team Member 3">
-                            <h4>Dendup Tshering</h4>
-                            <p>Database management</p>
-                        </div>
-                    </div>
+{% extends 'main.html' %}
+
+{% block title %}Help Page{% endblock %}
+
+{% block content %}
+<br><br><br>
+<div class="custom_container mt-5">
+    <h2 class="text-center mb-4">Counselor Information</h2>
+    <div class="row">
+        {% for captian in captain %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ captian.image.url }}" class="card-img-top" alt="{{ captian.name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ captian.name }}</h5>
+                    <p class="card-text">Block Counselor of: {{ captian.block }}</p>
+                    <p class="card-text">Contact Number: {{ captian.contact_number }}</p>
                 </div>
             </div>
-        </section>
-{%endblock%}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .card-img-top {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        height: 200px;
+        object-fit: contain; /* Ensure the entire image is shown */
+    }
+    .card-body {
+        padding: 20px;
+    }
+    .custom_container {
+        background: #f7f7f7;
+        padding: 30px;
+        border-radius: 10px;
+    }
+</style>
+{% endblock %}

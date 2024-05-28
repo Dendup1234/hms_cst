@@ -1,0 +1,31 @@
+{% extends 'admin_view/Forms/main.html' %}
+
+{% block form_title %}
+    Room Form
+{% endblock %}
+
+{% block progress_bar %}
+    <!-- You can add a progress bar here if needed -->
+{% endblock %}
+
+{% block form_content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="{{ form.room.id_for_label }}">{{ form.room.label }}</label>
+        {{ form.room }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.status.id_for_label }}">{{ form.status.label }}</label>
+        {{ form.status }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.max_capacity.id_for_label }}">{{ form.max_capacity.label }}</label>
+        {{ form.max_capacity }}
+    </div>
+    <div class="d-flex justify-content-between mt-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{% url 'hostel_detail' floor.hostel.id %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

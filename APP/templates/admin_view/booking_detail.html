@@ -1,0 +1,85 @@
+{% extends 'admin_view/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title text-center">{{ hostel.name }} - Booking Schedules</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">User</th>
+                                <th scope="col">Room</th>
+                                <th scope="col">Floor Number</th>
+                                <th scope="col">Check-in Date</th>
+                                <th scope="col">Cancel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in booking %}
+                            <tr>
+                                <td>{{ booking.user.username }}</td>
+                                <td>{{ booking.room.room }}</td>
+                                <td>{{ booking.room.floor.number }}</td>
+                                <td>{{ booking.check_in }}</td>
+                                <td>
+                                    <a href="{% url 'delete_booking' booking.id %}" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-x-circle"></i> Cancel
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding: 20px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .thead-dark th {
+        background-color: #343a40;
+        color: #fff;
+    }
+
+    .btn-danger {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-danger i {
+        margin-right: 5px;
+    }
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
+{% endblock %}

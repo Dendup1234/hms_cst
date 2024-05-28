@@ -1,0 +1,18 @@
+{% extends 'admin_view/Forms/main.html' %}
+
+{% block form_title %}
+    Confirm Review
+{% endblock %}
+
+{% block form_content %}
+<div class="container mt-3">
+    <p>Are you sure you want to delete the review of : {{ review.user.username }}?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'review_admin' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

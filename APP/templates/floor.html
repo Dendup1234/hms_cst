@@ -1,0 +1,44 @@
+{%extends 'main.html'%}
+
+{%block content%}
+<br><br><br><br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card" style="width: 88rem;">
+                <div class="card-header text-center">
+                    <h3> Floor Number </h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {%for floor in floor %}
+                    <li class="list-group-item text-center">
+                        <h5>{{floor.number}}</h5>
+                        <br>
+                        <a href = "{%url 'selected_room' floor.id%}"><button class="btn btn-primary">View Room</button></a>
+                    </li>
+
+                </ul>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+{%endblock%}

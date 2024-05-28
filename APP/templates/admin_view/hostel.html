@@ -1,0 +1,113 @@
+{% extends "admin_view/base.html" %}
+{% load static %}
+{% block content %}
+<h4 class="text-center my-4">Hostels View at Web Page</h4>
+<div class="container-md d-flex justify-content-center mb-4">
+</div>
+
+<div class="container-md">
+    <div class="row justify-content-center">
+        {% for hostel in hostel %}
+        <div class="col-md-6 d-flex justify-content-center mb-4">
+            <div class="card shadow-sm" style="width: 35rem;">
+                <img class="card-img-top" src="{{ hostel.image.url }}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">Name: {{ hostel.name }}</h5>
+                    <p class="card-text">{{ hostel.description }}</p>
+                    <p class="card-text">{{hostel.gender}}</p>
+                    <div class="d-flex justify-content-center">
+                        <a href="{% url 'hostel_detail' hostel.id %}" class="btn btn-primary">More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-center mb-3">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h4>Hostels</h4>
+            </div>
+            <div class="col-md-12 d-flex justify-content-center mt-3">
+                <a href="{% url 'hostel_create' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-lg"></i> Create
+                </a>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Hostel</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Floor Count</th>
+                <th scope="col">Room Count</th>
+                <th scope="col">Update</th>
+                <th scope="col">Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hostel in hostel %}
+            <tr>
+                <td>{{ hostel.name }}</td>
+                <td>{{ hostel.gender }}</td>
+                <td>{{ hostel.floor_count }}</td>
+                <td>{{ hostel.room_count }}</td>
+                <td>
+                    <a href="{% url 'hostel_update' hostel.id %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil"></i> Update
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'hostel_delete' hostel.id %}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card .card-img-top {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .card .card-body {
+        padding: 20px;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .thead-dark th {
+        background-color: #343a40;
+        color: #fff;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn i {
+        margin-right: 5px;
+    }
+</style>
+{% endblock %}

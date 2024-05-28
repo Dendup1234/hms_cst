@@ -1,0 +1,75 @@
+{% extends 'admin_view/Forms/main.html' %}
+
+{% block form_title %}
+    Do you want to confirm your booking?
+{% endblock %}
+
+{% block form_content %}
+<div class="container mt-3">
+    {% if error_message %}
+    <script>
+        alert("{{ error_message }}");
+    </script>
+    {% endif %}
+    <div class="room-details">
+        <h5>Room Details</h5>
+        <p><strong>Room:</strong> {{ room.room }}</p>
+        <p><strong>Floor:</strong> {{ room.floor.number }}</p>
+        <p><strong>Hostel:</strong> {{ room.floor.hostel.name }}</p>
+        <p><strong>Status:</strong> {{ room.status }}</p>
+        <p><strong>Maximum Capacity:</strong> {{ room.max_capacity }}</p>
+        
+        <h5>Bookings:</h5>
+        {% if booking.exists %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">Check-In Date</th>
+                    <th scope="col">Check-Out Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in booking %}
+                <tr>
+                    <td>{{ booking.user.username }}</td>
+                    <td>{{ booking.check_in }}</td>
+                    <td>{{ booking.check_out }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No bookings yet.</p>
+        {% endif %}
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-primary">Book Now</button>
+            <a href="{% url 'selected_room' room.floor.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .room-details {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+    .room-details h5 {
+        margin-bottom: 15px;
+    }
+    .room-details p {
+        margin: 5px 0;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+{% endblock %}

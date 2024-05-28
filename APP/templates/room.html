@@ -1,0 +1,125 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<br><br><br><br>
+<div class="container">
+    <div class="row mb-4 justify-content-center">
+        <div class="col-auto me-4">
+            <span class="legend-box vacant"></span> Vacant
+        </div>
+        <div class="col-auto me-4">
+            <span class="legend-box maintenance"></span> Maintenance
+        </div>
+        <div class="col-auto me-4">
+            <span class="legend-box full"></span> Full
+        </div>
+    </div>
+    <div class="row">
+        {% for room in room %}
+        <div class="col-md-3 mb-4">
+            {% if room.status == 'Vacant' %}
+            <a href="{% url 'booking_room' room.id %}" class="text-decoration-none room-link"
+               onclick="return confirmAdminBooking('{{ user.username }}')">
+                <div class="card room-box vacant">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ room.room }}</h5>
+                    </div>
+                </div>
+            </a>
+            {% elif room.status == 'Maintainece' %}
+            <a href="" class="text-decoration-none room-link"
+               onclick="return confirmMaintenanceAlert('{{ room.status }}')">
+                <div class="card room-box maintenance">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ room.room }}</h5>
+                    </div>
+                </div>
+            </a>
+            {% elif room.status == 'Full' %}
+            <a href="{% url 'booking_room' room.id %}" class="text-decoration-none room-link"
+               onclick="return confirmAdminBooking('{{ user.username }}')">
+                <div class="card room-box full">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ room.room }}</h5>
+                    </div>
+                </div>
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+<style>
+    .room-box {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        color: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .room-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .vacant {
+        background-color: #28a745;
+    }
+
+    .maintenance {
+        background-color: #dc3545;
+    }
+
+    .full {
+        background-color: #6c757d;
+    }
+
+    .legend-box {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        border-radius: 4px;
+        margin-right: 5px;
+    }
+
+    .legend-box.vacant {
+        background-color: #28a745;
+    }
+
+    .legend-box.maintenance {
+        background-color: #dc3545;
+    }
+
+    .legend-box.full {
+        background-color: #6c757d;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    .text-decoration-none:hover {
+        text-decoration: none;
+    }
+</style>
+<script>
+    function confirmMaintenanceAlert(status) {
+        if (status === 'Maintainece') {
+            alert("This room is under maintenance. Please choose another room.");
+            return false;  // Prevent the default action (navigation)
+        }
+        return true;  // Allow the navigation
+    }
+
+    function confirmAdminBooking(username) {
+        if (username === 'pema') {
+            alert("Admin cannot book a room.");
+            return false;  // Prevent the default action (navigation)
+        }
+        return true;  // Allow the navigation
+    }
+</script>
+{% endblock %}
