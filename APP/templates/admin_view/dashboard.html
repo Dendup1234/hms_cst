@@ -80,7 +80,7 @@
                                     </td>
                                     <td>{{ user.reg_number }}</td>
                                     <td>{{ user.gender }}</td>
-                                    <td><a href="{% url 'student' user.reg_number %}" class="btn btn-sm btn-primary">More</a></td>
+                                    <td><a href="{% url 'student' user.id %}" class="btn btn-sm btn-primary">More</a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

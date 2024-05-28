@@ -1,74 +1,93 @@
-.banner{
+body {
+    margin-top: 150px;
+}
+.banner {
     width: 100%;
     height: 180px;
     background-size: cover;
     background-position: center;
     animation: animateBackground 20s linear infinite;
-    background: linear-gradient(to right,  #87CEEB, #1E90FF,#0e4e82);
-    position:fixed;
-    top:0;
-    right:0;
-    left:0;
+    background: linear-gradient(to right, #87CEEB, #1E90FF, #0e4e82);
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
     z-index: 2;
 }
-.Contain{
+.Contain {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    padding: 20px;
 }
-.left-section{
-    flex:1fr;
+.left-section {
+    flex: 1;
     max-width: 150px;
-    padding-top: 20px;
-
 }
-.icon_phone{
+.icon_phone {
     margin-left: 20px;
     margin-top: 20px;
     width: 24px;
     height: 24px;
-
 }
-.icon_mail{
+.icon_mail {
     height: 24px;
     width: 24px;
     margin-left: 10px;
     margin-top: 20px;
 }
-.middle-section{
-    flex:1fr;
-    max-width: 150px;
+.middle-section {
+    flex: 1;
+    text-align: center;
 }
-.logo{
+.logo {
     height: 45px;
     width: 45px;
     margin-top: 5px;
-    margin-left: 50px;
 }
-.title{
+.title {
     font-family: 'Times New Roman', Times, serif;
     color: white;
-    text-align: center;
 }
-.right-section{
-    flex:1fr;
+.right-section {
+    flex: 1;
     max-width: 150px;
-    margin-right: 20px;
+    text-align: right;
 }
-.line{
-    margin-top:-10px;
+.line {
+    margin-top: -10px;
     color: white;
 }
-.hamburger{
+.hamburger {
     width: 20px;
     height: 20px;
-    display: flex;
-    justify-content: end;
 }
 .navbar-nav .nav-link {
     color: white;
     transition: color 0.3s;
 }
-.navbar-nav .nav-link:hover{
-    color:rgb(206, 198, 198);
+.navbar-nav .nav-link:hover {
+    color: rgb(206, 198, 198);
 }
+@media (max-width: 768px) {
+    .Contain {
+        flex-direction: column;
+        align-items: center;
+    }
+    .left-section, .right-section {
+        max-width: none;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
+.custom-navbar {
+    background-color: transparent;
+  }
+  
+  @media (max-width: 992px) { /* Bootstrap breakpoint for lg and below */
+    .custom-navbar {
+      background-color: black !important; /* Ensure the background is black when collapsed */
+    }
+  }
+  

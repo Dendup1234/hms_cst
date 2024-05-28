@@ -4,9 +4,8 @@ from django.contrib.auth.models import User
 # For the user
 class Userprofile(models.Model):
     user = models.OneToOneField(User,null=True,on_delete=models.CASCADE,related_name='userprofile')
-    profile_pic = models.ImageField(null=True,blank=True)
     name = models.CharField(max_length=200,null=True)
-    reg_number = models.IntegerField(default=0,null=True)
+    reg_number = models.IntegerField(default=0,null=True,unique=True)
     Email_address = models.CharField(max_length=100, null=True)
     contact_no = models.IntegerField(default=0,null=True)
     gender = (
@@ -25,7 +24,7 @@ class Userprofile(models.Model):
     def __str__ (self):
         return self.name if self.name else self.user.username if self.user else "Unnamed Profile"
     
-    
+# Hostel   
 class Hostel(models.Model):
     gender = (
         ('M','Male'),
@@ -39,6 +38,7 @@ class Hostel(models.Model):
     def __str__ (self):
         return self.name
 
+# Menu
 class Menu(models.Model): 
     day = models.CharField(max_length=200)
     breakfast_description = models.CharField(max_length=200)
@@ -59,6 +59,7 @@ class Floor(models.Model):
     def __str__(self):
         return f"{self.hostel.name} Floor - {self.number}"
 
+# Room
 class Room (models.Model):
     Status = (
         ('Vacant','Vacant'),
@@ -67,9 +68,9 @@ class Room (models.Model):
     )
     floor = models.ForeignKey(Floor,related_name='rooms' ,null=True,on_delete=models.SET_NULL)
     room = models.CharField(max_length=200)
-    max_capacity = models.IntegerField(default=1)
+    max_capacity = models.IntegerField(default=3)
     current_bookings = models.IntegerField(default=0)
-    status = models.CharField(max_length=200,choices=Status)
+    status = models.CharField(max_length=200,choices=Status ,default='Vacant')
 
     def __str__ (self):
         return f"{self.room}-{self.status}"
@@ -87,6 +88,7 @@ def get_end_of_semester():
     # Replace this with the actual logic to determine the end of the semester
     return datetime.date(datetime.datetime.now().year, 6, 7)
 
+#Booking
 class Booking(models.Model):
     user = models.OneToOneField(User, null=True, related_name='booking', on_delete=models.SET_NULL)
     room = models.ForeignKey(Room, null = True, on_delete=models.SET_NULL)
@@ -113,7 +115,7 @@ class Booking(models.Model):
             room.current_bookings = room.booking_set.count()
         room.update_status()
         room.save()
-
+# Reviews
 class Review(models.Model):
     hostel = models.ForeignKey(Hostel,related_name='reviews',on_delete= models.CASCADE)
     user = models.OneToOneField(User,on_delete=models.CASCADE)

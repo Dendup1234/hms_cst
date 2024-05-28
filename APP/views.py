@@ -2,10 +2,8 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .models import *
-# Create your views here.
 from .forms import HostelForm,MenuForm,RoomForm,FloorForm,BookingForm,ReviewForm,CounselorForm
 from django.db.models import Count
-# for the user login and registeration
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
 from django.contrib import messages
@@ -42,7 +40,7 @@ def seleted_floor(request, pk):
 @login_required(login_url='login')
 def selected_room(request,pk):
     floor = get_object_or_404(Floor, id= pk)
-    room = floor.rooms.all()
+    room = floor.rooms.all().order_by('room')
     context={
         'floor': floor,
         'room': room,
@@ -261,7 +259,7 @@ def userpage(request):
 @login_required(login_url='login')
 @admin_only
 def dashboard(request):
-    user = Userprofile.objects.all()
+    user = Userprofile.objects.all().order_by('name')
     bookings = Booking.objects.select_related('user', 'room', 'room__floor', 'room__floor__hostel')
     room = Room.objects.select_related('floor','floor__hostel')
     total_user = Userprofile.objects.count()
@@ -309,19 +307,21 @@ def hostel_admin_view(request):
         'hostel': hostels
     }
     return render(request,'admin_view/hostel.html',context)
-#
+#Hostel Details
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def hostel_detail(request,pk):
     hostel = get_object_or_404(Hostel, id=pk)
-    floor = hostel.floors.prefetch_related('rooms')
+    floors = hostel.floors.prefetch_related(
+        models.Prefetch('rooms', queryset=Room.objects.order_by('room'))
+    ).order_by('number')
 
     context ={
         'hostel': hostel,
-        'floor': floor,
+        'floor': floors,
     }
     return render(request,'admin_view/hostel_detail.html',context)
-#
+#Creating hostel
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def create_hostel(request):
@@ -337,7 +337,7 @@ def create_hostel(request):
         'form': form,
     }
     return render(request, 'admin_view/Forms/hostel_form.html', context)
-#
+#Update hostel
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def update_hostel(request, pk):
@@ -354,7 +354,8 @@ def update_hostel(request, pk):
         'form': form,
     }
     return render(request, 'admin_view/Forms/hostel_form.html', context)
-#
+
+#delete hostel
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def delete_hostel (request,pk):
@@ -393,7 +394,7 @@ def menu_create(request):
         'form': form
     }
     return render(request,'admin_view/Forms/menu_form.html',context)
-# 
+#  Menu update
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def menu_update(request,pk):
@@ -410,7 +411,7 @@ def menu_update(request,pk):
         'form': form,
     }
     return render(request, 'admin_view/Forms/menu_form.html', context)
-#
+# Menu Delete
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def menu_delete(request,pk):
@@ -445,7 +446,7 @@ def create_room(request, pk):
         'floor': floor,
     }
     return render(request, 'admin_view/Forms/room_form.html', context)
-#
+# Update room
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def update_room(request,pk):
@@ -454,7 +455,7 @@ def update_room(request,pk):
         form = RoomForm(request.POST, request.FILES, instance=room)
         if form.is_valid():
             form.save()
-            return redirect('hostel')  # Ensure this is the correct URL pattern name
+            return redirect('hostel_detail' ,pk=room.floor.hostel.id)  # Ensure this is the correct URL pattern name
     else:
         form = RoomForm(instance=room)
     
@@ -463,14 +464,14 @@ def update_room(request,pk):
         'floor': room.floor,
     }
     return render(request, 'admin_view/Forms/room_form.html', context)
-#
+# delete room 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def delete_room(request,pk):
     room = get_object_or_404(Room, id=pk)
     if request.method == 'POST':
         room.delete()
-        return redirect('hostel')
+        return redirect('hostel_detail' ,pk=room.floor.hostel.id)
     context = {
         'room': room,
         'hostel': room.floor.hostel,
@@ -479,7 +480,7 @@ def delete_room(request,pk):
 
 # For the floor CRUD functions
 
-#
+#Create floor
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def create_floor(request,pk):
@@ -500,7 +501,7 @@ def create_floor(request,pk):
     }
     return render(request,'admin_view/Forms/floor_form.html',context)
 
-#
+# update floor
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def update_floor(request,pk):
@@ -509,7 +510,7 @@ def update_floor(request,pk):
         form = FloorForm(request.POST, request.FILES, instance=floor)
         if form.is_valid():
             form.save()
-            return redirect('hostel')  # Ensure this is the correct URL pattern name
+            return redirect('hostel_detail', pk=floor.hostel.id)  # Ensure this is the correct URL pattern name
     else:
         form = FloorForm(instance=floor)
     
@@ -519,14 +520,14 @@ def update_floor(request,pk):
     }
     return render(request, 'admin_view/Forms/floor_form.html', context)
 
-#
+# delete floor
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def delete_floor(request,pk):
     floor = get_object_or_404(Floor, id=pk)
     if request.method == 'POST':
         floor.delete()
-        return redirect('hostel')
+        return redirect('hostel_detail', pk= floor.hostel.id)
     context = {
         'floor': floor
     }
@@ -542,7 +543,7 @@ def booking_admin(request):
     }
     return render(request, 'admin_view/booking.html',context)
 
-#
+#booking details
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -554,7 +555,7 @@ def booking_detail(request,pk):
         'booking': bookings,
     }
     return render(request, 'admin_view/booking_detail.html', context)
-#
+#delete booking
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
