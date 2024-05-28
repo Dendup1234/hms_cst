@@ -1,0 +1,47 @@
+{% extends 'admin_view/Forms/main.html' %}
+
+{% block form_title %}
+    Menu Form
+{% endblock %}
+
+{% block progress_bar %}
+    <!-- You can add a progress bar here if needed -->
+{% endblock %}
+
+{% block form_content %}
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="{{ form.day.id_for_label }}">{{ form.day.label }}</label>
+        {{ form.day }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.breakfast_description.id_for_label }}">{{ form.breakfast_description.label }}</label>
+        {{ form.breakfast_description }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.breakfast_image.id_for_label }}">{{ form.breakfast_image.label }}</label>
+        {{ form.breakfast_image }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.lunch_description.id_for_label }}">{{ form.lunch_description.label }}</label>
+        {{ form.lunch_description }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.lunch_image.id_for_label }}">{{ form.lunch_image.label }}</label>
+        {{ form.lunch_image }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.dinner_description.id_for_label }}">{{ form.dinner_description.label }}</label>
+        {{ form.dinner_description }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.dinner_image.id_for_label }}">{{ form.dinner_image.label }}</label>
+        {{ form.dinner_image }}
+    </div>
+    <div class="d-flex justify-content-between mt-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{% url 'menu_admin' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

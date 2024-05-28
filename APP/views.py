@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .models import *
 # Create your views here.
-from .forms import HostelForm,MenuForm,RoomForm,FloorForm
+from .forms import HostelForm,MenuForm,RoomForm,FloorForm,BookingForm,ReviewForm,CounselorForm
 from django.db.models import Count
 # for the user login and registeration
 from django.contrib.auth.forms import UserCreationForm
@@ -15,15 +15,102 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from .decorators import unauthenticated_user,allowed_users,admin_only
 from django.contrib.auth.models import Group 
+from django.db.models import Avg
 
 # Webpage Home view
 @login_required(login_url='login')
 def hostel(request):
-    hostel = Hostel.objects.all()
+    male_hostels = Hostel.objects.filter(gender='M').annotate(average_rating=Avg('reviews__reviews'), review_count=Count('reviews'))
+    female_hostels = Hostel.objects.filter(gender='F').annotate(average_rating=Avg('reviews__reviews'), review_count=Count('reviews'))
     context = {
-        "hostel": hostel
+        "male_hostels": male_hostels,
+        "female_hostels": female_hostels,
     }
     return render(request,'index.html',context)
+
+# Floor view for the selected hostel
+@login_required(login_url='login')
+def seleted_floor(request, pk):
+    hostel = get_object_or_404(Hostel, id=pk)
+    floor = hostel.floors.all()
+    context={
+        'hostel': hostel,
+        'floor': floor,
+    }
+    return render(request,'floor.html',context)
+# Selected room for the floor of the given hostel
+@login_required(login_url='login')
+def selected_room(request,pk):
+    floor = get_object_or_404(Floor, id= pk)
+    room = floor.rooms.all()
+    context={
+        'floor': floor,
+        'room': room,
+    }
+    return render(request,'room.html',context)
+
+@login_required(login_url='login')
+def booking_room(request,pk):
+    room = get_object_or_404(Room,id=pk)
+    user_profile = request.user.userprofile
+    booking = Booking.objects.filter(room=room)
+    error_message = None
+    # for handeling  the gender error
+    if room.floor.hostel.gender != user_profile.gender:
+        error_message = "Gender mismatch error."
+        context={
+            'user_profile': user_profile,
+            'room':room,
+            'error_message': error_message,
+            'booking': booking,
+
+        }
+        return render(request, 'booking_room.html',context)
+    # for handeling the error based on the user booking twice
+    if Booking.objects.filter(user=user_profile.user).exists():
+        error_message = "You cannot book a room more than twice "
+        context={
+            'room':room,
+            'error_message': error_message,
+            'booking': booking,
+
+        }
+        return render(request, 'booking_room.html',context)
+    # for handling the error for the maximum capacity of the room
+    if room.current_bookings >= room.max_capacity:
+        error_message = "Maximum room capacity reached."
+        context = {
+            'room': room,
+            'error_message': error_message,
+            'booking': booking,
+        }
+        return render(request, 'booking_room.html', context)
+    
+    if request.method == 'POST':
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit= False)
+            booking.user = request.user
+            booking.room = room
+            booking.save()
+            error_message = "Booking have been successfully done"
+            context={
+            'room':room,
+            'error_message': error_message,
+            'booking': booking,
+            }
+            return render(request, 'booking_room.html',context)
+
+    else:
+        form = BookingForm()
+    context ={
+        'form': form,
+        'room': room,
+        'error_message': error_message,
+        'booking': booking,
+    }
+    return render (request,'booking_room.html', context)
+
 
 # Menu web page view
 @login_required(login_url='login')
@@ -33,16 +120,70 @@ def menu(request):
         "menu":menu
     }
     return render(request,'menu.html',context)
+# Review page to be seen for the particular hostel
+@login_required(login_url='login')
+def reviews(request, pk):
+    hostel = get_object_or_404(Hostel,id=pk)
+    review = hostel.reviews.all()
+    context = {
+        'hostel': hostel,
+        'review': review,
+    }
+    return render(request,'reviews.html',context)
 
 # Reviews page at the web page
 @login_required(login_url='login')
-def reviews(request):
-    return render(request,'Review.html')
+def add_reviews(request, pk):
+    hostel = get_object_or_404(Hostel, id=pk)
+    user_profile = request.user.userprofile
+
+    # for the opposite gender review problem
+    if hostel.gender != user_profile.gender:
+        error_message = "You cannot review more than twice "
+        context={
+            'hostel':hostel,
+            'error_message': error_message,
+        }
+        return render(request,'review_form.html',context)
+
+    # for handling the error based on the user reviewing twice
+    if Review.objects.filter(user=user_profile.user).exists():
+        error_message = "You cannot review more than twice "
+        form = ReviewForm(request.POST)
+        context={
+            'hostel':hostel,
+            'error_message': error_message,
+            'form': form,
+
+        }
+        return render(request,'review_form.html',context)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.hostel = hostel
+            review.save()
+            return redirect('home')
+    else:
+        form = ReviewForm()
+
+    context = {
+        'form': form,
+        'hostel': hostel,
+    }
+    return render(request, 'review_form.html', context)
 
 # About us page for the web page
 @login_required(login_url='login')
-def aboutus(request):
-    return render(request,'about_us.html')
+def help(request):
+    captain = Counselor.objects.all()
+    context = {
+        'captain': captain
+    }
+    return render(request,'about_us.html',context)
+
 
 # Login view for the login procedure
 @unauthenticated_user
@@ -71,15 +212,36 @@ def register(request):
     if form.is_valid():
         user = form.save()
         username = form.cleaned_data.get('username')
+        email = form.cleaned_data.get('email')
+        reg_number = form.cleaned_data.get('reg_number')
+        contact_no = form.cleaned_data.get('contact_no')
+        gender = form.cleaned_data.get('gender')
+        father_name = form.cleaned_data.get('father_name')
+        father_email = form.cleaned_data.get('father_email')
+        father_contact = form.cleaned_data.get('father_contact')
+        mother_name = form.cleaned_data.get('mother_name')
+        mother_email = form.cleaned_data.get('mother_email')
+        mother_contact = form.cleaned_data.get('mother_contact')
+
         group = Group.objects.get(name='student')
         user.groups.add(group)
         Userprofile.objects.create(
-            user= user,
-            name=username
+            user=user,
+            name=username,
+            reg_number=reg_number,
+            Email_address=email,
+            contact_no=contact_no,
+            gender=gender,
+            Father_name=father_name,
+            Father_email_address=father_email,
+            Father_contact_no=father_contact,
+            Mother_name=mother_name,
+            Mother_email_address=mother_email,
+            Mother_contact_no=mother_contact
         )
         return redirect('login')
-    context={'form':form}
-    return render(request,'accounts/register.html',context)
+    context = {'form': form}
+    return render(request, 'accounts/register.html', context)
 
 # User page
 @login_required(login_url='login')
@@ -92,11 +254,7 @@ def userpage(request):
     }
     return render(request,'admin_view/userpage.html',context)
 
-#User Setting
-def usersetting(request):
-    context = {
-    }
-    return render(request,'admin_view/user_setting.html',context)
+
 
 
 #Dashboard for the admin view
@@ -178,7 +336,7 @@ def create_hostel(request):
     context = {
         'form': form,
     }
-    return render(request, 'admin_view/hostel_form.html', context)
+    return render(request, 'admin_view/Forms/hostel_form.html', context)
 #
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -195,7 +353,7 @@ def update_hostel(request, pk):
     context = {
         'form': form,
     }
-    return render(request, 'admin_view/hostel_form.html', context)
+    return render(request, 'admin_view/Forms/hostel_form.html', context)
 #
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -208,7 +366,7 @@ def delete_hostel (request,pk):
         'hostel': hostel
 
     }
-    return render(request,'admin_view/hostel_delete.html',context)
+    return render(request,'admin_view/Forms/hostel_delete.html',context)
 
 # Menu admin page
 @login_required(login_url='login')
@@ -234,7 +392,7 @@ def menu_create(request):
     context={
         'form': form
     }
-    return render(request,'admin_view/menu_form.html',context)
+    return render(request,'admin_view/Forms/menu_form.html',context)
 # 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -251,7 +409,7 @@ def menu_update(request,pk):
     context = {
         'form': form,
     }
-    return render(request, 'admin_view/menu_form.html', context)
+    return render(request, 'admin_view/Forms/menu_form.html', context)
 #
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -264,7 +422,7 @@ def menu_delete(request,pk):
         'menu': menu
 
     }
-    return render(request,'admin_view/menu_delete.html',context)
+    return render(request,'admin_view/Forms/menu_delete.html',context)
 
 
 #For the room CRUD functions
@@ -286,7 +444,7 @@ def create_room(request, pk):
         'form': form,
         'floor': floor,
     }
-    return render(request, 'admin_view/room_form.html', context)
+    return render(request, 'admin_view/Forms/room_form.html', context)
 #
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -302,8 +460,9 @@ def update_room(request,pk):
     
     context = {
         'form': form,
+        'floor': room.floor,
     }
-    return render(request, 'admin_view/room_form.html', context)
+    return render(request, 'admin_view/Forms/room_form.html', context)
 #
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -313,9 +472,10 @@ def delete_room(request,pk):
         room.delete()
         return redirect('hostel')
     context = {
-        'room': room
+        'room': room,
+        'hostel': room.floor.hostel,
     }
-    return render(request,'admin_view/room_delete.html',context)
+    return render(request,'admin_view/Forms/room_delete.html',context)
 
 # For the floor CRUD functions
 
@@ -338,7 +498,7 @@ def create_floor(request,pk):
         'form': form,
         'hostel': hostel,
     }
-    return render(request,'admin_view/floor_form.html',context)
+    return render(request,'admin_view/Forms/floor_form.html',context)
 
 #
 @login_required(login_url='login')
@@ -354,10 +514,10 @@ def update_floor(request,pk):
         form = FloorForm(instance=floor)
     
     context = {
-        'floor': floor,
         'form': form,
+        'hostel': floor.hostel,
     }
-    return render(request, 'admin_view/floor_form.html', context)
+    return render(request, 'admin_view/Forms/floor_form.html', context)
 
 #
 @login_required(login_url='login')
@@ -370,7 +530,7 @@ def delete_floor(request,pk):
     context = {
         'floor': floor
     }
-    return render(request,'admin_view/floor_delete.html',context)
+    return render(request,'admin_view/Forms/floor_delete.html',context)
 
 # For the booking view at the admin page
 @login_required(login_url='login')
@@ -383,18 +543,19 @@ def booking_admin(request):
     return render(request, 'admin_view/booking.html',context)
 
 #
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def booking_detail(request,pk):
     hostel = get_object_or_404(Hostel, id=pk)
     bookings = Booking.objects.filter(room__floor__hostel=hostel)
-    
     context = {
         'hostel': hostel,
         'booking': bookings,
     }
     return render(request, 'admin_view/booking_detail.html', context)
 #
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def delete_booking(request,pk):
@@ -405,7 +566,87 @@ def delete_booking(request,pk):
     context = {
         'booking': booking
     }
-    return render(request,'admin_view/booking_delete.html',context)
+    return render(request,'admin_view/Forms/booking_delete.html',context)
+
+# Help page in the admin view
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def help_admin(request):
+    counselor= Counselor.objects.all()
+    context = {
+        'counselor': counselor,
+    }
+    return render(request,'admin_view/counselor.html',context)
+# Create Counselor
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def create_counselor(request):
+    form = CounselorForm
+    if request.method == 'POST':
+        form = CounselorForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('counselor')  # Ensure this is the correct URL pattern name
+    else:
+        form = CounselorForm()
+    context = {
+        'form': form
+    }
+    return render(request,'admin_view/Forms/counselor_form.html',context)
+
+# Delete Counselor
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_counselor(request, pk):
+    counselor = get_object_or_404(Counselor, id=pk)
+    if request.method == 'POST':
+        counselor.delete()
+        return redirect('counselor')  # Ensure this is the correct URL pattern name
+    context = {
+        'counselor': counselor
+    }
+    return render(request, 'admin_view/Forms/counselor_confirm_delete.html', context)
+
+# Update_counselor
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def update_counselor(request, pk):
+    counselor = get_object_or_404(Counselor, id=pk)
+    form = CounselorForm(instance=counselor)
+    if request.method == 'POST':
+        form = CounselorForm(request.POST, request.FILES, instance=counselor)
+        if form.is_valid():
+            form.save()
+            return redirect('counselor')  # Ensure this is the correct URL pattern name
+    context = {
+        'form': form,
+        'counselor': counselor
+    }
+    return render(request, 'admin_view/Forms/counselor_form.html', context)
+
+# For the review handling by the admin
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def review_admin(request):
+    review = Review.objects.all()
+    context = {
+        'review': review,
+
+    }
+    return render(request,'admin_view/reviews.html',context)
+#For deleting the reviews
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_review(request, pk):
+    review = get_object_or_404(Review, id=pk)
+    if request.method == 'POST':
+        review.delete()
+        return redirect('review_admin')  # Ensure this is the correct URL pattern name
+    context = {
+        'review': review,
+    }
+    return render(request, 'admin_view/Forms/review_delete.html', context)
+
 
 
 

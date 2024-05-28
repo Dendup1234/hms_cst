@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 # For the user
 class Userprofile(models.Model):
-    user = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
+    user = models.OneToOneField(User,null=True,on_delete=models.CASCADE,related_name='userprofile')
     profile_pic = models.ImageField(null=True,blank=True)
     name = models.CharField(max_length=200,null=True)
     reg_number = models.IntegerField(default=0,null=True)
@@ -39,7 +39,7 @@ class Hostel(models.Model):
     def __str__ (self):
         return self.name
 
-class Menu(models.Model):  # Class names should be capitalized
+class Menu(models.Model): 
     day = models.CharField(max_length=200)
     breakfast_description = models.CharField(max_length=200)
     breakfast_image = models.ImageField(upload_to='breakfasts/')  # Adjusted upload_to path
@@ -90,8 +90,8 @@ def get_end_of_semester():
 class Booking(models.Model):
     user = models.OneToOneField(User, null=True, related_name='booking', on_delete=models.SET_NULL)
     room = models.ForeignKey(Room, null = True, on_delete=models.SET_NULL)
-    check_in = models.DateField(default=datetime.date.today)
-    check_out = models.DateField(default=get_end_of_semester)
+    check_in = models.DateField(default=datetime.date.today,blank = True)
+    check_out = models.DateField(default=get_end_of_semester,blank = True)
 
     def __str__(self):
         return f"{self.user} has booked {self.room}"
@@ -113,6 +113,25 @@ class Booking(models.Model):
             room.current_bookings = room.booking_set.count()
         room.update_status()
         room.save()
+
+class Review(models.Model):
+    hostel = models.ForeignKey(Hostel,related_name='reviews',on_delete= models.CASCADE)
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    comment = models.TextField()
+    reviews = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f'{self.user.username}:Reviewed {self.hostel.name}'
+
+class Counselor(models.Model):
+    name = models.CharField(max_length=200)
+    block = models.CharField(max_length=200)
+    contact_number = models.CharField(max_length=20)
+    image = models.ImageField(upload_to='counselors/')
+
+    def __str__(self):
+        return self.name
+    
 
 
     

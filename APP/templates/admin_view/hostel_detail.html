@@ -1,67 +1,160 @@
-{%extends 'admin_view/base.html'%}
+{% extends 'admin_view/base.html' %}
+{% load static %}
 
-{%block content%}
-<div class="container">
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
     <div class="row">
         <div class="col-md-12">
-            <div class="card bg-light mb-3">
-                <div class="card-header">
-                    <h4 class="card-title text-center">{{hostel.name}}</h4>
-                    <div class="d-flex justify-content-center">
-                    
-                        <a href="{%url 'create_floor' hostel.id %}"><button class="btn btn-primary">Create Floor</button></a>
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="card-title">{{ hostel.name }}</h4>
+                    <div class="d-flex justify-content-center mt-3">
+                        <a href="{% url 'create_floor' hostel.id %}" class="btn btn-light">
+                            <i class="bi bi-plus-lg"></i> Create Floor
+                        </a>
                     </div>
                 </div>
 
                 <div class="card-body">
                     {% for floor in floor %}
-                    <h5 class="text-center">Floor Number: {{floor.number}}</h5>
-                    <div class="d-flex  justify-content-center">
+                    <div class="mb-5">
+                        <h5 class="text-center">Floor Number: {{ floor.number }}</h5>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="{% url 'create_room' floor.id %}" class="btn btn-primary me-3">
+                                <i class="bi bi-plus-lg"></i> Create Room
+                            </a>
+                        </div>
+                        <div class="d-flex justify-content-center my-3">
+                            <a href="{% url 'floor_update' floor.id %}" class="btn btn-primary btn-sm me-3">
+                                <i class="bi bi-pencil"></i> Update Floor
+                            </a>
+                            <a href="{% url 'floor_delete' floor.id %}" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i> Delete Floor
+                            </a>
+                        </div>
 
-                        <a href="{%url 'create_room' floor.id %}"><button class="btn btn-primary me-3">Create Room</button></a>
-
+                        <table class="table table-hover">
+                            <thead class="bg-dark text-white">
+                                <tr>
+                                    <th>Gender</th>
+                                    <th>Room</th>
+                                    <th>Status</th>
+                                    <th>Max Capacity</th>
+                                    <th>Current Booking</th>
+                                    <th>Update</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for room in floor.rooms.all %}
+                                <tr>
+                                    <td>{{ hostel.gender }}</td>
+                                    <td>{{ room.room }}</td>
+                                    <td>{{ room.status }}</td>
+                                    <td>{{ room.max_capacity }}</td>
+                                    <td>{{ room.current_bookings }}</td>
+                                    <td>
+                                        <a href="{% url 'room_update' room.id %}" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-pencil"></i> Update
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'room_delete' room.id %}" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="d-flex justify-content-center my-3">
-                        <a href="{%url 'floor_update' floor.id %}"><button class="btn btn-primary btn-sm me-3">Update Floor</button></a>
-                        <a href="{%url 'floor_delete' floor.id %}"><button class="btn btn-danger btn-sm">Delete Floor</button></a>
-                    </div>
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Gender</th>
-                                <th>Room</th>
-                                <th>Status</th>
-                                <th>Max Capacity</th>
-                                <th>Current Booking</th>
-                                <th>Update</th>
-                                <th>Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Sample Data -->
-                            {% for room in floor.rooms.all %}
-                            <tr>
-                                <td>{{hostel.gender}}</td>
-                                <td>{{room.room}}</td>
-                                <td>{{room.status}}</td>
-                                <td>{{room.max_capacity}}</td>
-                                <td>{{room.current_bookings}}</td>
-                                <td><a href="{%url 'room_update' room.id %}"><button
-                                            class="btn btn-primary">Update</button></a></td>
-                                <td><a href="{%url 'room_delete' room.id %}"><button
-                                            class="btn btn-danger">Delete</button></a></td>
-                            </tr>
-                            {%endfor%}
-
-                        </tbody>
-                    </table>
-                    <br>
-                    <br>
-                    {%endfor%}
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 </div>
-{%endblock%}
+
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        border-radius: 10px 10px 0 0;
+        padding: 20px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .bg-dark {
+        background-color: #343a40 !important;
+    }
+
+    .text-white {
+        color: #fff !important;
+    }
+
+    .btn-light {
+        color: #343a40;
+        background-color: #f8f9fa;
+        border-color: #f8f9fa;
+    }
+
+    .btn-light:hover {
+        color: #343a40;
+        background-color: #e2e6ea;
+        border-color: #dae0e5;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn i {
+        margin-right: 5px;
+    }
+
+    .mb-5 {
+        margin-bottom: 3rem !important;
+    }
+
+    .mt-5 {
+        margin-top: 3rem !important;
+    }
+
+    .me-3 {
+        margin-right: 1rem !important;
+    }
+
+    .my-3 {
+        margin-top: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .d-flex {
+        display: flex !important;
+    }
+
+    .justify-content-center {
+        justify-content: center !important;
+    }
+</style>
+{% endblock %}

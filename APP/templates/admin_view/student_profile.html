@@ -1,87 +1,117 @@
 {% extends 'admin_view/base.html' %}
 
-{% block content%}
+{% block content %}
 <div class="container mt-5">
     <div class="row">
-        <!-- Customer Card -->
+        <!-- Student Profile Card -->
         <div class="col-md-12">
-            <div class="card card-custom bg-light">
-                <div class="card-header text-center">
+            <div class="card card-custom bg-light mb-3 shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
                     Student Profile
                 </div>
-                <div class="card-body ">
-                    <p>Name: {{users.name}}</p>
-                    <p>Registration Number: {{users.reg_number}}</p>
-                    <p>Gender: {{users.gender}}</p>
-                    <p>Email: {{users.Email_address}}</p>
-                    <p>Phone: {{users.contact_no}} </p>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ users.name }}</p>
+                    <p><strong>Registration Number:</strong> {{ users.reg_number }}</p>
+                    <p><strong>Gender:</strong> {{ users.gender }}</p>
+                    <p><strong>Email:</strong> {{ users.Email_address }}</p>
+                    <p><strong>Phone:</strong> {{ users.contact_no }}</p>
                 </div>
             </div>
         </div>
-
-        <!-- Contact Information Card -->
-
-        <!-- Total Orders Card -->
     </div>
+
     <div class="row my-5">
+        <!-- Father Information Card -->
         <div class="col-md-6">
-            <div class="card card-custom bg-light">
-                <div class="card-header">
+            <div class="card card-custom bg-light mb-3 shadow-sm">
+                <div class="card-header bg-info text-white">
                     Father Information
                 </div>
                 <div class="card-body">
-                    
-                    <p>Name: {{users.Father_name}}</p>
-                    <p>Email: {{users.Father_email_address}} </p>
-                    <p>Phone: {{users.Father_contact_no}}</p>
+                    <p><strong>Name:</strong> {{ users.Father_name }}</p>
+                    <p><strong>Email:</strong> {{ users.Father_email_address }}</p>
+                    <p><strong>Phone:</strong> {{ users.Father_contact_no }}</p>
                 </div>
             </div>
         </div>
+        <!-- Mother Information Card -->
         <div class="col-md-6">
-            <div class="card card-custom bg-light">
-                <div class="card-header">
+            <div class="card card-custom bg-light mb-3 shadow-sm">
+                <div class="card-header bg-warning text-white">
                     Mother Information
                 </div>
                 <div class="card-body">
-                    <p>Name: {{users.Mother_name}}</p>
-                    <p>Email: {{users.Mother_email_address}} </p>
-                    <p>Phone: {{users.contact_no}}</p>
+                    <p><strong>Name:</strong> {{ users.Mother_name }}</p>
+                    <p><strong>Email:</strong> {{ users.Mother_email_address }}</p>
+                    <p><strong>Phone:</strong> {{ users.contact_no }}</p>
                 </div>
             </div>
         </div>
-        
-        
-
     </div>
 
     <div class="row mt-3">
         <h4 class="text-center">Booking Schedule</h4>
-
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Hostel</th>
-                        <th>Floor</th>
-                        <th>Room</th>
-                        <th>Update</th>
-                        <th>Remove</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Sample Data -->
-                    {%for booking in booking %}
-                    <tr>
-                        <td>{{booking.room.floor.hostel.name}}</td>
-                        <td>{{booking.room.floor.number}}</td>
-                        <td>{{booking.room.room}}</td>
-                        <td><button type="button" class="btn btn-warning btn-sm">Update</button></td>
-                        <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>   
-                    </tr>
-                    {%endfor%}
-                </tbody>
-            </table>
+        <div class="col-md-12">
+            <div class="card card-custom bg-light mb-3 shadow-sm">
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Hostel</th>
+                                <th>Floor</th>
+                                <th>Room</th>
+                                <th>Update</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample Data -->
+                            {% for booking in booking %}
+                            <tr>
+                                <td>{{ booking.room.floor.hostel.name }}</td>
+                                <td>{{ booking.room.floor.number }}</td>
+                                <td>{{ booking.room.room }}</td>
+                                <td><button type="button" class="btn btn-warning btn-sm">Update</button></td>
+                                <td><button type="button" class="btn btn-danger btn-sm">Remove</button></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-{%endblock%}
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card .card-header {
+        border-radius: 10px 10px 0 0;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        margin-bottom: 15px;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .thead-light th {
+        background-color: #e9ecef;
+    }
+</style>
+{% endblock %}

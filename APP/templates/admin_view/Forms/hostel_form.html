@@ -1,0 +1,35 @@
+{% extends 'admin_view/Forms/main.html' %}
+
+{% block form_title %}
+    Hostel Form
+{% endblock %}
+
+{% block progress_bar %}
+    <!-- You can add a progress bar here if needed -->
+{% endblock %}
+
+{% block form_content %}
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group mb-3">
+        <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+        {{ form.name }}
+    </div>
+    <div class="form-group mb-3">
+        <label for="{{ form.gender.id_for_label }}" class="form-label">{{ form.gender.label }}</label>
+        {{ form.gender }}
+    </div>
+    <div class="form-group mb-3">
+        <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+        {{ form.description }}
+    </div>
+    <div class="form-group mb-3">
+        <label for="{{ form.image.id_for_label }}" class="form-label">{{ form.image.label }}</label>
+        {{ form.image }}
+    </div>
+    <div class="d-flex justify-content-between mt-3">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{% url 'hostel' %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

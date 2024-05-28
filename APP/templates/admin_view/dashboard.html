@@ -1,110 +1,102 @@
-{% extends "admin_view/base.html"%}
+{% extends "admin_view/base.html" %}
 
 {% block content %}
-<div class="container  mt-5">
+<div class="container mt-5">
     <div class="row d-flex justify-content-center">
-        <!--Total User-->
+        <!-- Total User -->
         <div class="col-md-2">
-            <div class="card card-custom bg-blue">
+            <div class="card text-white bg-primary mb-3 shadow-sm">
                 <div class="card-body text-center">
-                    Total User
-                </div>
-                <div class="card-title text-center">
-                    <h1>{{user_count}}</h1>
+                    <h5 class="card-title">Total Users</h5>
+                    <h1 class="card-text">{{user_count}}</h1>
                 </div>
             </div>
         </div>
-        <!-- Total Hostel Card -->
+        <!-- Total Hostels -->
         <div class="col-md-2">
-            <div class="card card-custom bg-blue">
+            <div class="card text-white bg-success mb-3 shadow-sm">
                 <div class="card-body text-center">
-                    Total Hostels
-                </div>
-                <div class="card-title text-center">
-                    <h1>{{hostel_count}}</h1>
+                    <h5 class="card-title">Total Hostels</h5>
+                    <h1 class="card-text">{{hostel_count}}</h1>
                 </div>
             </div>
         </div>
-        <!-- Total Floors Card -->
+        <!-- Total Floors -->
         <div class="col-md-2">
-            <div class="card card-custom bg-blue">
+            <div class="card text-white bg-warning mb-3 shadow-sm">
                 <div class="card-body text-center">
-                    Total Floors
-                </div>
-                <div class="card-title text-center">
-                    <h1>{{floor_count}}</h1>
+                    <h5 class="card-title">Total Floors</h5>
+                    <h1 class="card-text">{{floor_count}}</h1>
                 </div>
             </div>
         </div>
-
-        <!-- Total Rooms Card -->
+        <!-- Total Rooms -->
         <div class="col-md-2">
-            <div class="card card-custom bg-lightblue">
+            <div class="card text-white bg-info mb-3 shadow-sm">
                 <div class="card-body text-center">
-                    Total Rooms
-                </div>
-                <div class="card-title text-center">
-                    <h1>{{room_count}}</h1>
+                    <h5 class="card-title">Total Rooms</h5>
+                    <h1 class="card-text">{{room_count}}</h1>
                 </div>
             </div>
         </div>
-
-        <!-- Total Booking Card -->
+        <!-- Total Bookings -->
         <div class="col-md-2">
-            <div class="card card-custom bg-teal">
+            <div class="card text-white bg-danger mb-3 shadow-sm">
                 <div class="card-body text-center">
-                    Total Bookings
-                </div>
-                <div class="card-title text-center">
-                    <h1>{{booking_count}}</h1>
+                    <h5 class="card-title">Total Bookings</h5>
+                    <h1 class="card-text">{{booking_count}}</h1>
                 </div>
             </div>
         </div>
-        
     </div>
+
     <div class="container mt-5">
         <div class="row">
-            <!-- Students Card -->
-            <div class="col-md-6">
-                <div class="card bg-light mb-3">
-                    <div class="card-header">
-                        <h5 class="card-title">Students Info</h5>
+            <!-- Students Info -->
+            <div class="col-md-12">
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Students Info</h5>
                     </div>
                     <div class="card-body">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
-
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Reg_No</th>
-                                    <th>Gender</th>
-                                    <th>Info</th>
+                                    <th>NAME</th>
+                                    <th>REG_NO</th>
+                                    <th>GENDER</th>
+                                    <th>INFO</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample Data -->
                                 {% for user in user %}
                                 <tr>
-                                    <td>{{user.name}}</td>
-                                    <td>{{user.reg_number}}</td>
-                                    <td>{{user.gender}}</td>
-                                    <td><a href="{% url 'student' user.reg_number %}" class="btn btn-primary btn-sm">More</a></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="d-flex flex-column">
+                                                <span>{{ user.name }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ user.reg_number }}</td>
+                                    <td>{{ user.gender }}</td>
+                                    <td><a href="{% url 'student' user.reg_number %}" class="btn btn-sm btn-primary">More</a></td>
                                 </tr>
-                                {%endfor%}
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Last 5 Orders Card -->
-            <div class="col-md-6">
-                <div class="card bg-light mb-3">
-                    <div class="card-header">
-                        <h5 class="card-title">Room Under Maintainece</h5>
+            <!-- Rooms Under Maintenance -->
+            <div class="col-md-12">
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="card-title mb-0">Rooms Under Maintenance</h5>
                     </div>
                     <div class="card-body">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Hostel</th>
@@ -115,61 +107,96 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample Data -->
                                 {% for M in maintain %}
                                 <tr>
-                                    <td>{{M.floor.hostel.name}}</td>
-                                    <td>{{M.floor.hostel.gender}}</td>
-                                    <td>{{M.floor.number}}</td>
-                                    <td>{{M.room}}</td>
-                                    <td><button type="button" class="btn btn-success btn-sm">Done</button></td>
+                                    <td>{{ M.floor.hostel.name }}</td>
+                                    <td>{{ M.floor.hostel.gender }}</td>
+                                    <td>{{ M.floor.number }}</td>
+                                    <td>{{ M.room }}</td>
+                                    <td><button type="button" class="btn btn-sm btn-success">Done</button></td>
                                 </tr>
-                                {%endfor%}
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card bg-light mb-3">
-                        <div class="card-header">
-                            <h5 class="card-title">Room With No Vacant Space</h5>
-                        </div>
-                        <div class="card-body">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Hostel</th>
-                                        <th>Gender</th>
-                                        <th>Floor</th>
-                                        <th>Room Number</th>
-                                        <th>Update</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Sample Data -->
-                                    {% for F in full %}
-                                    <tr>
-                                        <td>{{F.floor.hostel.name}}</td>
-                                        <td>{{F.floor.hostel.gender}}</td>
-                                        <td>{{F.floor.number}}</td>
-                                        <td>{{F.room}}</td>
-                                        <td><button type="button" class="btn btn-success btn-sm">Done</button></td>
-                                    </tr>
-                                    {%endfor%}
-                                </tbody>
-                            </table>
-                        </div>
+
+            <!-- Rooms With No Vacant Space -->
+            <div class="col-md-12">
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="card-title mb-0">Rooms With No Vacant Space</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Hostel</th>
+                                    <th>Gender</th>
+                                    <th>Floor</th>
+                                    <th>Room Number</th>
+                                    <th>Update</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for F in full %}
+                                <tr>
+                                    <td>{{ F.floor.hostel.name }}</td>
+                                    <td>{{ F.floor.hostel.gender }}</td>
+                                    <td>{{ F.floor.number }}</td>
+                                    <td>{{ F.room }}</td>
+                                    <td><button type="button" class="btn btn-sm btn-success">Done</button></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+</div>
 
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
+    .card .card-header {
+        border-radius: 10px 10px 0 0;
+    }
 
+    .card-body {
+        padding: 20px;
+    }
 
+    .card-title {
+        margin-bottom: 15px;
+    }
 
-    {%endblock%}
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 12px;
+    }
+
+    .badge-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 12px;
+    }
+</style>
+{% endblock %}
